@@ -1,0 +1,9 @@
+/ZonaeCogito/DPARRAY/*.~pas
+*.~dpr
+*.~pas
+*.~dfm
+*.~ddp
+*.dcu
+*.exe
+*.cfg
+*.dof~
