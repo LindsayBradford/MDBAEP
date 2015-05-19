@@ -2902,7 +2902,7 @@ begin
      if (sParameterCalled <> '') then
         FileOpen(sParameterCalled);
 
-     Caption := 'Zonae Cogito ' + sVersionString;
+     Caption := 'Ordered Heuristics ZC ' + sVersionString;
 
      f64BitOS := Detect64BitOS;
      fMarZone := False;
