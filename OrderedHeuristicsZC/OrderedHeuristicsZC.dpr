@@ -1,4 +1,4 @@
-program ZonaeCogito;
+program OrderedHeuristicsZC;
 
 uses
   Forms,
@@ -70,8 +70,7 @@ uses
 
 begin
   Application.Initialize;
-  Application.Title := 'Zonae Cogito';
-
+  Application.Title := 'Ordered Hauristics ZC';
   sParameterCalled := '';
   if (ParamCount > 0) then
      sParameterCalled := ParamStr(1);

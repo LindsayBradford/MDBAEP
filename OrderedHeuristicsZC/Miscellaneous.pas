@@ -80,7 +80,7 @@ procedure StoreLayerSizeOption(const iLayer : integer;
 procedure StoreLayerFontSizeOption(const iLayer, iFontSize : integer);
 
 const
-     sVersionString = 'version 1.82';
+     sVersionString = 'Version 1.0';
      sCopyrightString = 'Copyright 2008-2012 University of Queensland';
      SORT_TYPE_STRING = 0;
      SORT_TYPE_REAL = 1;

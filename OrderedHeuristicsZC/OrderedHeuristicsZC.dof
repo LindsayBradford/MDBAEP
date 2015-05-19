@@ -84,20 +84,25 @@ Comments=
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=1
-Item0=C:\Data\ARI Senior Software Engineer\MDBA\Data\ZC\source\ZonaeCogito
+Count=2
+Item0=.;.\DPARRAY
+Item1=C:\Data\ARI Senior Software Engineer\MDBA\Data\ZC\source\ZonaeCogito
 [HistoryLists\hlUnitOutputDirectory]
-Count=2
-Item0=$(DELPHI)\Lib
-Item1=${DELPHI}\Lib
+Count=3
+Item0=..\..\lib
+Item1=$(DELPHI)\Lib
+Item2=${DELPHI}\Lib
 [HistoryLists\hlOutputDirectorry]
-Count=1
-Item0=C:\Data\ARI Senior Software Engineer\MDBA\Data\ZC\bin
+Count=2
+Item0=..\..\bin
+Item1=C:\Data\ARI Senior Software Engineer\MDBA\Data\ZC\bin
 [HistoryLists\hlBPLOutput]
-Count=2
-Item0=$(DELPHI)\Lib
-Item1=${DELPHI{\Lib
+Count=3
+Item0=..\..\lib
+Item1=$(DELPHI)\Lib
+Item2=${DELPHI{\Lib
 [HistoryLists\hlDCPOutput]
-Count=2
-Item0=$(DELPHI)\Lib
-Item1=${DELPHI}\Lib
+Count=3
+Item0=..\..\lib
+Item1=$(DELPHI)\Lib
+Item2=${DELPHI}\Lib
