@@ -3,9 +3,10 @@ unit SCP_Main;
 interface
 
 uses
-    Marxan_interface, GIS,
+  Marxan_interface, GIS,
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Menus, CSV_Child, DBF_Child, jpeg, ExtCtrls, StdCtrls, DdeMan, ds;
+  Menus, CSV_Child, DBF_Child, jpeg, ExtCtrls, StdCtrls,
+  DdeMan, ds;
 
 type
   TSCPForm = class(TForm)
@@ -227,6 +228,7 @@ type
     procedure TileVertical;
     procedure TileHorizontal;
     procedure Open1Click(Sender: TObject);
+    procedure PromptFileOpen();
     function ReturnNamedMarxanChildIndex(const sName : string) : integer;
     function ReturnNamedGISChildIndex(const sName : string) : integer;
     function ReturnNamedDBFTableChildIndex(const sName : string) : integer;
@@ -435,6 +437,7 @@ type
     procedure Restore1Click(Sender: TObject);
     procedure ClearRecent;
     procedure ClearRecentFiles1Click(Sender: TObject);
+    procedure OpenOnlyFileOrPromptIfMultiple();
     function GenerateAndRunRScripts : boolean;
   private
     { Private declarations }
@@ -1758,6 +1761,11 @@ begin
 end;
 
 procedure TSCPForm.Open1Click(Sender: TObject);
+begin
+  PromptFileOpen();
+end;
+
+procedure TSCPForm.PromptFileOpen();
 var
    iCount : integer;
 begin
@@ -1773,6 +1781,7 @@ begin
      end;
 end;
 
+
 procedure TSCPForm.FileOpen(const sFilename : string);
 var
    sExtension, sLocalFileName : string;
@@ -1780,7 +1789,6 @@ var
    AChild : TGIS_Child;
 begin
      try
-        FormStyle := fsMDIForm;
         iPos := Pos('&',sFilename);
         if (iPos > 0) then
         begin
@@ -2518,7 +2526,38 @@ end;
 
 procedure TSCPForm.FormActivate(Sender: TObject);
 begin
-     SwitchChildFocus;
+   SwitchChildFocus;
+   OpenOnlyFileOrPromptIfMultiple();
+end;
+
+procedure TSCPForm.OpenOnlyFileOrPromptIfMultiple();
+var
+   currDir             : String;
+   SR                  : TSearchRec;
+   zcpFileList         : TStrings;
+begin
+   currDir := GetCurrentDir;
+   zcpFileList := TStringList.Create;
+
+   try
+      if FindFirst('*.zcp', faArchive, SR) = 0 then
+      begin
+         repeat
+            zcpFileList.Add(SR.Name);
+         until FindNext(SR) <> 0;
+         FindClose(SR);
+      end; // any .zcp files found loaded into zcpFileList
+
+      if zcpFileList.Count = 1 then
+         FileOpen(IncludeTrailingBackslash(currDir) + zcpFileList[0])
+      else
+      begin
+         OpenDialog1.InitialDir := currDir;
+         PromptFileOpen;
+      end; 
+   finally
+      zcpFileList.Free;
+   end; // try
 end;
 
 procedure TSCPForm.BrowseMarxanDataset1Click(Sender: TObject);
@@ -3836,7 +3875,6 @@ end;
 
 procedure TSCPForm.JoinDBFTables1Click(Sender: TObject);
 begin
-        FormStyle := fsMDIForm;
      JoinDBFTablesForm := TJoinDBFTablesForm.Create(Application);
      JoinDBFTablesForm.ShowModal;
      JoinDBFTablesForm.Free;
@@ -3872,7 +3910,6 @@ end;
 
 procedure TSCPForm.ConvertZSTATStables1Click(Sender: TObject);
 begin
-        FormStyle := fsMDIForm;
      ConvertZSTATSForm := TConvertZSTATSForm.Create(Application);
      ConvertZSTATSForm.ShowModal;
      ConvertZSTATSForm.Free;
