@@ -9,11 +9,6 @@ uses
   calibration in 'calibration.pas' {CalibrationForm},
   LoadScenario in 'LoadScenario.pas' {LoadScenarioForm},
   Ds in 'DPARRAY\Ds.pas',
-  dsdebug in 'DPARRAY\Dsdebug.pas',
-  os_lims in 'DPARRAY\OS_LIMS.PAS',
-  datastru in 'DPARRAY\DATASTRU.PAS',
-  arraydb in 'DPARRAY\arraydb.pas',
-  stdfctns in 'DPARRAY\stdfctns.pas',
   DSCanvas in 'DPARRAY\DSCANVAS.PAS' {Form2},
   GIS in 'GIS.pas' {GIS_Child},
   MZ_system_test in 'MZ_system_test.pas' {MarxanSystemTestForm},
@@ -62,8 +57,7 @@ uses
   BoxWhiskerPlot in 'BoxWhiskerPlot.pas' {BoxWhiskerPlotForm},
   eFlows_progress in 'eFlows_progress.pas' {eFlowsProgressForm},
   ConvertLayer in 'ConvertLayer.pas' {ConvertLayerForm},
-  MessageForm in 'MessageForm.pas' {MsgForm},
-  MapWinGIS_TLB in '..\MapWinGIS_TLB\MapWInGIS_TLB.pas';
+  MessageForm in 'MessageForm.pas' {MsgForm};
 
 {$R *.RES}
 
