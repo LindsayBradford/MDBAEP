@@ -1,7 +1,7 @@
 package MapWinGIS;
 
 {$R *.RES}
-{$R '..\..\..\..\..\..\..\program files (x86)\borland\delphi5\Imports\MapWinGIS_TLB.dcr'}
+{$R 'MapWinGIS_TLB.dcr'}
 {$ALIGN ON}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
@@ -30,6 +30,6 @@ requires
   vcl50;
 
 contains
-  MapWinGIS_TLB in '..\..\..\..\..\..\..\Program Files (x86)\Borland\Delphi5\Imports\MapWinGIS_TLB.pas';
+  MapWinGIS_TLB in 'MapWinGIS_TLB.pas';
 
 end.

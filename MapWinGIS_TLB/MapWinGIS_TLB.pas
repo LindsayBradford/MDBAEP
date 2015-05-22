@@ -11,30 +11,25 @@ unit MapWinGIS_TLB;
 // manual modifications will be lost.                                         
 // ************************************************************************ //
 
-// PASTLWTR : $Revision:   1.130  $
-// File generated on 8/12/2003 9:34:23 AM from Type Library described below.
+// PASTLWTR : $Revision:   1.88  $
+// File generated on 22/05/2015 3:47:47 PM from Type Library described below.
 
-// ************************************************************************  //
-// Type Lib: c:\dev\InstallImage\V3.0\MapWinGIS.ocx (1)
-// LIBID: {C368D713-CC5F-40ED-9F53-F84FE197B96A}
-// LCID: 0
-// Helpfile: c:\dev\InstallImage\V3.0\MapWinGIS.hlp
+// ************************************************************************ //
+// Type Lib: C:\Program Files (x86)\Common Files\MapWindow\MapWinGIS.ocx (1)
+// IID\LCID: {C368D713-CC5F-40ED-9F53-F84FE197B96A}\0
+// Helpfile: C:\Program Files (x86)\Common Files\MapWindow\MapWinGIS.chm
 // DepndLst: 
-//   (1) v2.0 stdole, (C:\WINDOWS\System32\stdole2.tlb)
-//   (2) v4.0 StdVCL, (C:\WINDOWS\System32\stdvcl40.dll)
+//   (1) v2.0 stdole, (C:\Windows\SysWOW64\stdole2.tlb)
+//   (2) v4.0 StdVCL, (C:\Windows\SysWow64\STDVCL40.DLL)
 // Errors:
 //   Hint: Parameter 'Object' of _DMap.AddLayer changed to 'Object_'
 //   Hint: Member 'Type' of 'IField' changed to 'Type_'
 //   Hint: Parameter 'Type' of IUtils.TinToShapefile changed to 'Type_'
 // ************************************************************************ //
 {$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
-{$WRITEABLECONST ON}
-
 interface
 
-uses ActiveX, Classes, Graphics, OleCtrls, OleServer, StdVCL, Variants, 
-Windows;
-  
+uses Windows, ActiveX, Classes, Graphics, OleServer, OleCtrls, StdVCL;
 
 // *********************************************************************//
 // GUIDS declared in the TypeLibrary. Following prefixes are used:        
@@ -45,7 +40,7 @@ Windows;
 // *********************************************************************//
 const
   // TypeLibrary Major and minor versions
-  MapWinGISMajorVersion = 1;
+  MapWinGISMajorVersion = 3;
   MapWinGISMinorVersion = 0;
 
   LIBID_MapWinGIS: TGUID = '{C368D713-CC5F-40ED-9F53-F84FE197B96A}';
@@ -61,6 +56,9 @@ const
   IID_IGrid: TGUID = '{18DFB64A-9E72-4CBE-AFD6-A5B7421DD0CB}';
   CLASS_Grid: TGUID = '{B4A353E3-D3DF-455C-8E4D-CFC937800820}';
   IID_IGridHeader: TGUID = '{E42814D1-6269-41B1-93C2-AA848F00E459}';
+  IID_IGridColorScheme: TGUID = '{1C43B56D-2065-4953-9138-31AFE8470FF5}';
+  IID_IGridColorBreak: TGUID = '{1C6ECF5D-04FA-43C4-97B1-22D5FFB55FBD}';
+  IID_IVector: TGUID = '{C60625AB-AD4C-405E-8CA2-62E36E4B3F73}';
   CLASS_GridHeader: TGUID = '{044AFE79-D3DE-4500-A14B-DECEA635B497}';
   IID_IESRIGridManager: TGUID = '{55B3F2DA-EB09-4FA9-B74B-9A1B3E457318}';
   CLASS_ESRIGridManager: TGUID = '{86E02063-602C-47F2-9778-81E6979E3267}';
@@ -82,9 +80,6 @@ const
   CLASS_ShapeNetwork: TGUID = '{B655545F-1D9C-4D81-A73C-205FC2C3C4AB}';
   IID_IUtils: TGUID = '{360BEC33-7703-4693-B6CA-90FEA22CF1B7}';
   CLASS_Utils: TGUID = '{B898877F-DC9E-4FBF-B997-B65DC97B72E9}';
-  IID_IGridColorScheme: TGUID = '{1C43B56D-2065-4953-9138-31AFE8470FF5}';
-  IID_IGridColorBreak: TGUID = '{1C6ECF5D-04FA-43C4-97B1-22D5FFB55FBD}';
-  IID_IVector: TGUID = '{C60625AB-AD4C-405E-8CA2-62E36E4B3F73}';
   IID_ITin: TGUID = '{55DD824E-332E-41CA-B40C-C8DC81EE209C}';
   CLASS_Vector: TGUID = '{D226C4B1-C97C-469D-8CBC-8E3DF2139612}';
   CLASS_GridColorScheme: TGUID = '{ECEB5841-F84E-4DFD-8C96-32216C69C818}';
@@ -155,7 +150,10 @@ const
   lsDotted = $00000001;
   lsDashed = $00000002;
   lsDashDotDash = $00000003;
-  lsCustom = $00000004;
+  lsDoubleSolid = $00000004;
+  lsDoubleSolidPlusDash = $00000005;
+  lsTrainTracks = $00000006;
+  lsCustom = $00000007;
 
 // Constants for enum tkFillStipple
 type
@@ -181,6 +179,16 @@ const
   ptTriangleLeft = $00000005;
   ptTriangleRight = $00000006;
   ptUserDefined = $00000007;
+  ptImageList = $00000008;
+
+// Constants for enum tkResizeBehavior
+type
+  tkResizeBehavior = TOleEnum;
+const
+  rbClassic = $00000000;
+  rbModern = $00000001;
+  rbIntuitive = $00000002;
+  rbWarp = $00000003;
 
 // Constants for enum GridDataType
 type
@@ -200,9 +208,46 @@ const
   Ascii = $00000000;
   Binary = $00000001;
   Esri = $00000002;
-  Sdts = $00000003;
-  UseExtension = $00000004;
+  GeoTiff = $00000003;
+  Sdts = $00000004;
+  PAux = $00000005;
+  PCIDsk = $00000006;
+  DTed = $00000007;
+  Bil = $00000008;
+  Ecw = $00000009;
+  MrSid = $0000000A;
+  Flt = $0000000B;
+  UseExtension = $0000000C;
   InvalidGridFileType = $FFFFFFFF;
+
+// Constants for enum ColoringType
+type
+  ColoringType = TOleEnum;
+const
+  Hillshade = $00000000;
+  Gradient = $00000001;
+  Random = $00000002;
+
+// Constants for enum GradientModel
+type
+  GradientModel = TOleEnum;
+const
+  Logorithmic = $00000000;
+  Linear = $00000001;
+  Exponential = $00000002;
+
+// Constants for enum PredefinedColorScheme
+type
+  PredefinedColorScheme = TOleEnum;
+const
+  FallLeaves = $00000000;
+  SummerMountains = $00000001;
+  Desert = $00000002;
+  Glaciers = $00000003;
+  Meadow = $00000004;
+  ValleyFires = $00000005;
+  DeadSea = $00000006;
+  Highway1 = $00000007;
 
 // Constants for enum ImageType
 type
@@ -211,7 +256,22 @@ const
   BITMAP_FILE = $00000000;
   GIF_FILE = $00000001;
   USE_FILE_EXTENSION = $00000002;
+  TIFF_FILE = $00000003;
+  JPEG_FILE = $00000004;
+  PNG_FILE = $00000005;
   PPM_FILE = $00000007;
+  ECW_FILE = $00000008;
+  JPEG2000_FILE = $00000009;
+  SID_FILE = $0000000A;
+  PNM_FILE = $0000000B;
+  PGM_FILE = $0000000C;
+  BIL_FILE = $0000000D;
+  ADF_FILE = $0000000E;
+  GRD_FILE = $0000000F;
+  IMG_FILE = $00000010;
+  ASC_FILE = $00000011;
+  BT_FILE = $00000012;
+  MAP_FILE = $00000013;
 
 // Constants for enum ShpfileType
 type
@@ -264,35 +324,6 @@ const
   EXCLUSIVEOR_OPERATION = $00000002;
   UNION_OPERATION = $00000003;
 
-// Constants for enum ColoringType
-type
-  ColoringType = TOleEnum;
-const
-  Hillshade = $00000000;
-  Gradient = $00000001;
-  Random = $00000002;
-
-// Constants for enum GradientModel
-type
-  GradientModel = TOleEnum;
-const
-  Logorithmic = $00000000;
-  Linear = $00000001;
-  Exponential = $00000002;
-
-// Constants for enum PredefinedColorScheme
-type
-  PredefinedColorScheme = TOleEnum;
-const
-  FallLeaves = $00000000;
-  SummerMountains = $00000001;
-  Desert = $00000002;
-  Glaciers = $00000003;
-  Meadow = $00000004;
-  ValleyFires = $00000005;
-  DeadSea = $00000006;
-  Highway1 = $00000007;
-
 // Constants for enum SplitMethod
 type
   SplitMethod = TOleEnum;
@@ -317,6 +348,12 @@ type
   IGridDisp = dispinterface;
   IGridHeader = interface;
   IGridHeaderDisp = dispinterface;
+  IGridColorScheme = interface;
+  IGridColorSchemeDisp = dispinterface;
+  IGridColorBreak = interface;
+  IGridColorBreakDisp = dispinterface;
+  IVector = interface;
+  IVectorDisp = dispinterface;
   IESRIGridManager = interface;
   IESRIGridManagerDisp = dispinterface;
   IImage = interface;
@@ -337,12 +374,6 @@ type
   IShapeNetworkDisp = dispinterface;
   IUtils = interface;
   IUtilsDisp = dispinterface;
-  IGridColorScheme = interface;
-  IGridColorSchemeDisp = dispinterface;
-  IGridColorBreak = interface;
-  IGridColorBreakDisp = dispinterface;
-  IVector = interface;
-  IVectorDisp = dispinterface;
   ITin = interface;
   ITinDisp = dispinterface;
 
@@ -375,6 +406,9 @@ type
 // Declaration of structures, unions and aliases.                         
 // *********************************************************************//
   PDouble1 = ^Double; {*}
+  POleVariant1 = ^OleVariant; {*}
+  PSYSINT1 = ^SYSINT; {*}
+  PInteger1 = ^Integer; {*}
 
 
 // *********************************************************************//
@@ -405,6 +439,9 @@ type
     property IsLocked: tkLockMode dispid 19;
     property MapState: WideString dispid 20;
     property SerialNumber: WideString dispid 95;
+    property LineSeparationFactor: Integer dispid 96;
+    property SendOnDrawBackBuffer: WordBool dispid 118;
+    property MultilineLabels: WordBool dispid 133;
     procedure Redraw; dispid 21;
     function  AddLayer(const Object_: IDispatch; Visible: WordBool): Integer; dispid 22;
     procedure RemoveLayer(LayerHandle: Integer); dispid 23;
@@ -439,8 +476,8 @@ type
     procedure DrawLine(x1: Double; y1: Double; x2: Double; y2: Double; pixelWidth: Integer; 
                        Color: OLE_COLOR); dispid 51;
     procedure DrawCircle(x: Double; y: Double; pixelRadius: Double; Color: OLE_COLOR; fill: WordBool); dispid 52;
-    procedure DrawPolygon(var xPts: Double; var yPts: Double; numPoints: Integer; Color: OLE_COLOR; 
-                          fill: WordBool); dispid 53;
+    procedure DrawPolygon(var xPoints: OleVariant; var yPoints: OleVariant; numPoints: Integer; 
+                          Color: OLE_COLOR; fill: WordBool); dispid 53;
     property LayerKey[LayerHandle: Integer]: WideString dispid 54;
     property LayerPosition[LayerHandle: Integer]: Integer readonly dispid 55;
     property LayerHandle[LayerPosition: Integer]: Integer readonly dispid 56;
@@ -482,6 +519,53 @@ type
     function  SetImageLayerColorScheme(LayerHandle: Integer; const ColorScheme: IDispatch): WordBool; dispid 92;
     property GridFileName[LayerHandle: Integer]: WideString dispid 93;
     procedure UpdateImage(LayerHandle: Integer); dispid 94;
+    property LayerLabelsShadow[LayerHandle: Integer]: WordBool dispid 97;
+    property LayerLabelsScale[LayerHandle: Integer]: WordBool dispid 98;
+    procedure AddLabelEx(LayerHandle: Integer; const Text: WideString; Color: OLE_COLOR; x: Double; 
+                         y: Double; hJustification: tkHJustification; Rotation: Double); dispid 99;
+    procedure GetLayerStandardViewWidth(LayerHandle: Integer; var Width: Double); dispid 100;
+    procedure SetLayerStandardViewWidth(LayerHandle: Integer; Width: Double); dispid 101;
+    property LayerLabelsOffset[LayerHandle: Integer]: Integer dispid 102;
+    property LayerLabelsShadowColor[LayerHandle: Integer]: OLE_COLOR dispid 103;
+    property UseLabelCollision[LayerHandle: Integer]: WordBool dispid 104;
+    function  IsTIFFGrid(const Filename: WideString): WordBool; dispid 105;
+    function  IsSameProjection(const proj4_a: WideString; const proj4_b: WideString): WordBool; dispid 106;
+    procedure ZoomToMaxVisibleExtents; dispid 107;
+    property MapResizeBehavior: tkResizeBehavior dispid 108;
+    function  HWnd: Integer; dispid 109;
+    function  set_UDPointImageListAdd(LayerHandle: Integer; const newValue: IDispatch): Integer; dispid 110;
+    property ShapePointImageListID[LayerHandle: Integer; Shape: Integer]: Integer dispid 111;
+    function  get_UDPointImageListCount(LayerHandle: Integer): Integer; dispid 112;
+    function  get_UDPointImageListItem(LayerHandle: Integer; ImageIndex: Integer): IDispatch; dispid 113;
+    procedure ClearUDPointImageList(LayerHandle: Integer); dispid 114;
+    procedure DrawLineEx(LayerHandle: Integer; x1: Double; y1: Double; x2: Double; y2: Double; 
+                         pixelWidth: Integer; Color: OLE_COLOR); dispid 115;
+    procedure DrawPointEx(LayerHandle: Integer; x: Double; y: Double; pixelSize: Integer; 
+                          Color: OLE_COLOR); dispid 116;
+    procedure DrawCircleEx(LayerHandle: Integer; x: Double; y: Double; pixelRadius: Double; 
+                           Color: OLE_COLOR; fill: WordBool); dispid 117;
+    procedure LabelColor(LayerHandle: Integer; LabelFontColor: OLE_COLOR); dispid 119;
+    procedure SetDrawingLayerVisible(LayerHandle: Integer; Visiable: WordBool); dispid 120;
+    procedure ClearDrawingLabels(DrawHandle: Integer); dispid 121;
+    procedure DrawingFont(DrawHandle: Integer; const FontName: WideString; FontSize: Integer); dispid 122;
+    procedure AddDrawingLabelEx(DrawHandle: Integer; const Text: WideString; Color: OLE_COLOR; 
+                                x: Double; y: Double; hJustification: tkHJustification; 
+                                Rotation: Double); dispid 123;
+    procedure AddDrawingLabel(DrawHandle: Integer; const Text: WideString; Color: OLE_COLOR; 
+                              x: Double; y: Double; hJustification: tkHJustification); dispid 124;
+    property DrawingLabelsOffset[DrawHandle: Integer]: Integer dispid 125;
+    property DrawingLabelsScale[DrawHandle: Integer]: WordBool dispid 126;
+    property DrawingLabelsShadow[DrawHandle: Integer]: WordBool dispid 127;
+    property DrawingLabelsShadowColor[DrawHandle: Integer]: OLE_COLOR dispid 128;
+    property UseDrawingLabelCollision[DrawHandle: Integer]: WordBool dispid 129;
+    property DrawingLabelsVisible[DrawHandle: Integer]: WordBool dispid 130;
+    procedure GetDrawingStandardViewWidth(DrawHandle: Integer; var Width: Double); dispid 131;
+    procedure SetDrawingStandardViewWidth(DrawHandle: Integer; Width: Double); dispid 132;
+    procedure DrawWidePolygon(var xPoints: OleVariant; var yPoints: OleVariant; numPoints: Integer; 
+                              Color: OLE_COLOR; fill: WordBool; Width: Smallint); dispid 134;
+    procedure DrawWideCircle(x: Double; y: Double; pixelRadius: Double; Color: OLE_COLOR; 
+                             fill: WordBool; Width: Smallint); dispid 135;
+    function  SnapShot2(ClippingLayerNbr: Integer; Zoom: Double; pWidth: Integer): IDispatch; dispid 136;
   end;
 
 // *********************************************************************//
@@ -499,6 +583,8 @@ type
     procedure SelectBoxDrag(Left: Integer; Right: Integer; Bottom: Integer; Top: Integer); dispid 6;
     procedure ExtentsChanged; dispid 7;
     procedure MapState(LayerHandle: Integer); dispid 8;
+    procedure OnDrawBackBuffer(BackBuffer: Integer); dispid 9;
+    procedure DblClick; dispid -601;
   end;
 
 // *********************************************************************//
@@ -523,6 +609,7 @@ type
     procedure Set_GlobalCallback(const pVal: ICallback); safecall;
     function  Get_Key: WideString; safecall;
     procedure Set_Key(const pVal: WideString); safecall;
+    function  InsertAt(Position: SYSINT; const Break: IShapefileColorBreak): Integer; safecall;
     property ColorBreak[Index: Integer]: IShapefileColorBreak read Get_ColorBreak write Set_ColorBreak;
     property LayerHandle: Integer read Get_LayerHandle write Set_LayerHandle;
     property FieldIndex: Integer read Get_FieldIndex write Set_FieldIndex;
@@ -549,6 +636,7 @@ type
     property ErrorMsg[ErrorCode: Integer]: WideString readonly dispid 8;
     property GlobalCallback: ICallback dispid 9;
     property Key: WideString dispid 10;
+    function  InsertAt(Position: SYSINT; const Break: IShapefileColorBreak): Integer; dispid 11;
   end;
 
 // *********************************************************************//
@@ -568,11 +656,14 @@ type
     procedure Set_EndColor(pVal: OLE_COLOR); safecall;
     function  Get_Caption: WideString; safecall;
     procedure Set_Caption(const pVal: WideString); safecall;
+    function  Get_Visible: WordBool; safecall;
+    procedure Set_Visible(pVal: WordBool); safecall;
     property StartValue: OleVariant read Get_StartValue write Set_StartValue;
     property EndValue: OleVariant read Get_EndValue write Set_EndValue;
     property StartColor: OLE_COLOR read Get_StartColor write Set_StartColor;
     property EndColor: OLE_COLOR read Get_EndColor write Set_EndColor;
     property Caption: WideString read Get_Caption write Set_Caption;
+    property Visible: WordBool read Get_Visible write Set_Visible;
   end;
 
 // *********************************************************************//
@@ -587,6 +678,7 @@ type
     property StartColor: OLE_COLOR dispid 3;
     property EndColor: OLE_COLOR dispid 4;
     property Caption: WideString dispid 5;
+    property Visible: WordBool dispid 6;
   end;
 
 // *********************************************************************//
@@ -643,6 +735,15 @@ type
     procedure ProjToCell(x: Double; y: Double; out Column: Integer; out Row: Integer); safecall;
     procedure CellToProj(Column: Integer; Row: Integer; out x: Double; out y: Double); safecall;
     function  Get_CdlgFilter: WideString; safecall;
+    function  AssignNewProjection(const Projection: WideString): WordBool; safecall;
+    function  Get_RasterColorTableColoringScheme: IGridColorScheme; safecall;
+    function  GetRow(Row: Integer; var Vals: Single): WordBool; safecall;
+    function  PutRow(Row: Integer; var Vals: Single): WordBool; safecall;
+    function  GetFloatWindow(StartRow: Integer; EndRow: Integer; StartCol: Integer; 
+                             EndCol: Integer; var Vals: Single): WordBool; safecall;
+    function  PutFloatWindow(StartRow: Integer; EndRow: Integer; StartCol: Integer; 
+                             EndCol: Integer; var Vals: Single): WordBool; safecall;
+    function  SetInvalidValuesToNodata(MinThresholdValue: Double; MaxThresholdValue: Double): WordBool; safecall;
     property Header: IGridHeader read Get_Header;
     property Value[Column: Integer; Row: Integer]: OleVariant read Get_Value write Set_Value;
     property InRam: WordBool read Get_InRam;
@@ -655,6 +756,7 @@ type
     property GlobalCallback: ICallback read Get_GlobalCallback write Set_GlobalCallback;
     property Key: WideString read Get_Key write Set_Key;
     property CdlgFilter: WideString read Get_CdlgFilter;
+    property RasterColorTableColoringScheme: IGridColorScheme read Get_RasterColorTableColoringScheme;
   end;
 
 // *********************************************************************//
@@ -686,6 +788,15 @@ type
     procedure ProjToCell(x: Double; y: Double; out Column: Integer; out Row: Integer); dispid 17;
     procedure CellToProj(Column: Integer; Row: Integer; out x: Double; out y: Double); dispid 18;
     property CdlgFilter: WideString readonly dispid 19;
+    function  AssignNewProjection(const Projection: WideString): WordBool; dispid 20;
+    property RasterColorTableColoringScheme: IGridColorScheme readonly dispid 21;
+    function  GetRow(Row: Integer; var Vals: Single): WordBool; dispid 22;
+    function  PutRow(Row: Integer; var Vals: Single): WordBool; dispid 23;
+    function  GetFloatWindow(StartRow: Integer; EndRow: Integer; StartCol: Integer; 
+                             EndCol: Integer; var Vals: Single): WordBool; dispid 24;
+    function  PutFloatWindow(StartRow: Integer; EndRow: Integer; StartCol: Integer; 
+                             EndCol: Integer; var Vals: Single): WordBool; dispid 25;
+    function  SetInvalidValuesToNodata(MinThresholdValue: Double; MaxThresholdValue: Double): WordBool; dispid 26;
   end;
 
 // *********************************************************************//
@@ -719,6 +830,8 @@ type
     procedure Set_GlobalCallback(const pVal: ICallback); safecall;
     function  Get_Key: WideString; safecall;
     procedure Set_Key(const pVal: WideString); safecall;
+    procedure Set_Owner(var t: SYSINT; var d: SYSINT; var s: SYSINT; var l: SYSINT; Param5: PSYSINT1); safecall;
+    procedure CopyFrom(const pVal: IGridHeader); safecall;
     property NumberCols: Integer read Get_NumberCols write Set_NumberCols;
     property NumberRows: Integer read Get_NumberRows write Set_NumberRows;
     property NodataValue: OleVariant read Get_NodataValue write Set_NodataValue;
@@ -732,6 +845,7 @@ type
     property ErrorMsg[ErrorCode: Integer]: WideString read Get_ErrorMsg;
     property GlobalCallback: ICallback read Get_GlobalCallback write Set_GlobalCallback;
     property Key: WideString read Get_Key write Set_Key;
+    property Owner[var t: SYSINT; var d: SYSINT; var s: SYSINT; var l: SYSINT]: PSYSINT1 write Set_Owner;
   end;
 
 // *********************************************************************//
@@ -754,6 +868,188 @@ type
     property ErrorMsg[ErrorCode: Integer]: WideString readonly dispid 11;
     property GlobalCallback: ICallback dispid 12;
     property Key: WideString dispid 13;
+    property Owner[var t: SYSINT; var d: SYSINT; var s: SYSINT; var l: SYSINT]: {??PSYSINT1} OleVariant writeonly dispid 14;
+    procedure CopyFrom(const pVal: IGridHeader); dispid 15;
+  end;
+
+// *********************************************************************//
+// Interface: IGridColorScheme
+// Flags:     (4544) Dual NonExtensible OleAutomation Dispatchable
+// GUID:      {1C43B56D-2065-4953-9138-31AFE8470FF5}
+// *********************************************************************//
+  IGridColorScheme = interface(IDispatch)
+    ['{1C43B56D-2065-4953-9138-31AFE8470FF5}']
+    function  Get_NumBreaks: Integer; safecall;
+    function  Get_AmbientIntensity: Double; safecall;
+    procedure Set_AmbientIntensity(pVal: Double); safecall;
+    function  Get_LightSourceIntensity: Double; safecall;
+    procedure Set_LightSourceIntensity(pVal: Double); safecall;
+    function  Get_LightSourceAzimuth: Double; safecall;
+    function  Get_LightSourceElevation: Double; safecall;
+    procedure SetLightSource(Azimuth: Double; Elevation: Double); safecall;
+    procedure InsertBreak(const BrkInfo: IGridColorBreak); safecall;
+    function  Get_Break(Index: Integer): IGridColorBreak; safecall;
+    procedure DeleteBreak(Index: Integer); safecall;
+    procedure Clear; safecall;
+    function  Get_NoDataColor: OLE_COLOR; safecall;
+    procedure Set_NoDataColor(pVal: OLE_COLOR); safecall;
+    procedure UsePredefined(LowValue: Double; HighValue: Double; Preset: PredefinedColorScheme); safecall;
+    function  GetLightSource: IVector; safecall;
+    function  Get_LastErrorCode: Integer; safecall;
+    function  Get_ErrorMsg(ErrorCode: Integer): WideString; safecall;
+    function  Get_GlobalCallback: ICallback; safecall;
+    procedure Set_GlobalCallback(const pVal: ICallback); safecall;
+    function  Get_Key: WideString; safecall;
+    procedure Set_Key(const pVal: WideString); safecall;
+    procedure InsertAt(Position: SYSINT; const Break: IGridColorBreak); safecall;
+    property NumBreaks: Integer read Get_NumBreaks;
+    property AmbientIntensity: Double read Get_AmbientIntensity write Set_AmbientIntensity;
+    property LightSourceIntensity: Double read Get_LightSourceIntensity write Set_LightSourceIntensity;
+    property LightSourceAzimuth: Double read Get_LightSourceAzimuth;
+    property LightSourceElevation: Double read Get_LightSourceElevation;
+    property Break[Index: Integer]: IGridColorBreak read Get_Break;
+    property NoDataColor: OLE_COLOR read Get_NoDataColor write Set_NoDataColor;
+    property LastErrorCode: Integer read Get_LastErrorCode;
+    property ErrorMsg[ErrorCode: Integer]: WideString read Get_ErrorMsg;
+    property GlobalCallback: ICallback read Get_GlobalCallback write Set_GlobalCallback;
+    property Key: WideString read Get_Key write Set_Key;
+  end;
+
+// *********************************************************************//
+// DispIntf:  IGridColorSchemeDisp
+// Flags:     (4544) Dual NonExtensible OleAutomation Dispatchable
+// GUID:      {1C43B56D-2065-4953-9138-31AFE8470FF5}
+// *********************************************************************//
+  IGridColorSchemeDisp = dispinterface
+    ['{1C43B56D-2065-4953-9138-31AFE8470FF5}']
+    property NumBreaks: Integer readonly dispid 1;
+    property AmbientIntensity: Double dispid 2;
+    property LightSourceIntensity: Double dispid 3;
+    property LightSourceAzimuth: Double readonly dispid 4;
+    property LightSourceElevation: Double readonly dispid 5;
+    procedure SetLightSource(Azimuth: Double; Elevation: Double); dispid 6;
+    procedure InsertBreak(const BrkInfo: IGridColorBreak); dispid 7;
+    property Break[Index: Integer]: IGridColorBreak readonly dispid 8;
+    procedure DeleteBreak(Index: Integer); dispid 9;
+    procedure Clear; dispid 10;
+    property NoDataColor: OLE_COLOR dispid 11;
+    procedure UsePredefined(LowValue: Double; HighValue: Double; Preset: PredefinedColorScheme); dispid 12;
+    function  GetLightSource: IVector; dispid 13;
+    property LastErrorCode: Integer readonly dispid 14;
+    property ErrorMsg[ErrorCode: Integer]: WideString readonly dispid 15;
+    property GlobalCallback: ICallback dispid 16;
+    property Key: WideString dispid 17;
+    procedure InsertAt(Position: SYSINT; const Break: IGridColorBreak); dispid 18;
+  end;
+
+// *********************************************************************//
+// Interface: IGridColorBreak
+// Flags:     (4544) Dual NonExtensible OleAutomation Dispatchable
+// GUID:      {1C6ECF5D-04FA-43C4-97B1-22D5FFB55FBD}
+// *********************************************************************//
+  IGridColorBreak = interface(IDispatch)
+    ['{1C6ECF5D-04FA-43C4-97B1-22D5FFB55FBD}']
+    function  Get_HighColor: OLE_COLOR; safecall;
+    procedure Set_HighColor(pVal: OLE_COLOR); safecall;
+    function  Get_LowColor: OLE_COLOR; safecall;
+    procedure Set_LowColor(pVal: OLE_COLOR); safecall;
+    function  Get_HighValue: Double; safecall;
+    procedure Set_HighValue(pVal: Double); safecall;
+    function  Get_LowValue: Double; safecall;
+    procedure Set_LowValue(pVal: Double); safecall;
+    function  Get_ColoringType: ColoringType; safecall;
+    procedure Set_ColoringType(pVal: ColoringType); safecall;
+    function  Get_GradientModel: GradientModel; safecall;
+    procedure Set_GradientModel(pVal: GradientModel); safecall;
+    function  Get_LastErrorCode: Integer; safecall;
+    function  Get_ErrorMsg(ErrorCode: Integer): WideString; safecall;
+    function  Get_GlobalCallback: ICallback; safecall;
+    procedure Set_GlobalCallback(const pVal: ICallback); safecall;
+    function  Get_Key: WideString; safecall;
+    procedure Set_Key(const pVal: WideString); safecall;
+    function  Get_Caption: WideString; safecall;
+    procedure Set_Caption(const pVal: WideString); safecall;
+    property HighColor: OLE_COLOR read Get_HighColor write Set_HighColor;
+    property LowColor: OLE_COLOR read Get_LowColor write Set_LowColor;
+    property HighValue: Double read Get_HighValue write Set_HighValue;
+    property LowValue: Double read Get_LowValue write Set_LowValue;
+    property ColoringType: ColoringType read Get_ColoringType write Set_ColoringType;
+    property GradientModel: GradientModel read Get_GradientModel write Set_GradientModel;
+    property LastErrorCode: Integer read Get_LastErrorCode;
+    property ErrorMsg[ErrorCode: Integer]: WideString read Get_ErrorMsg;
+    property GlobalCallback: ICallback read Get_GlobalCallback write Set_GlobalCallback;
+    property Key: WideString read Get_Key write Set_Key;
+    property Caption: WideString read Get_Caption write Set_Caption;
+  end;
+
+// *********************************************************************//
+// DispIntf:  IGridColorBreakDisp
+// Flags:     (4544) Dual NonExtensible OleAutomation Dispatchable
+// GUID:      {1C6ECF5D-04FA-43C4-97B1-22D5FFB55FBD}
+// *********************************************************************//
+  IGridColorBreakDisp = dispinterface
+    ['{1C6ECF5D-04FA-43C4-97B1-22D5FFB55FBD}']
+    property HighColor: OLE_COLOR dispid 1;
+    property LowColor: OLE_COLOR dispid 2;
+    property HighValue: Double dispid 3;
+    property LowValue: Double dispid 4;
+    property ColoringType: ColoringType dispid 5;
+    property GradientModel: GradientModel dispid 6;
+    property LastErrorCode: Integer readonly dispid 7;
+    property ErrorMsg[ErrorCode: Integer]: WideString readonly dispid 8;
+    property GlobalCallback: ICallback dispid 9;
+    property Key: WideString dispid 10;
+    property Caption: WideString dispid 11;
+  end;
+
+// *********************************************************************//
+// Interface: IVector
+// Flags:     (4544) Dual NonExtensible OleAutomation Dispatchable
+// GUID:      {C60625AB-AD4C-405E-8CA2-62E36E4B3F73}
+// *********************************************************************//
+  IVector = interface(IDispatch)
+    ['{C60625AB-AD4C-405E-8CA2-62E36E4B3F73}']
+    function  Get_i: Double; safecall;
+    procedure Set_i(pVal: Double); safecall;
+    function  Get_j: Double; safecall;
+    procedure Set_j(pVal: Double); safecall;
+    function  Get_k: Double; safecall;
+    procedure Set_k(pVal: Double); safecall;
+    procedure Normalize; safecall;
+    function  Dot(const V: IVector): Double; safecall;
+    function  CrossProduct(const V: IVector): IVector; safecall;
+    function  Get_LastErrorCode: Integer; safecall;
+    function  Get_ErrorMsg(ErrorCode: Integer): WideString; safecall;
+    function  Get_GlobalCallback: ICallback; safecall;
+    procedure Set_GlobalCallback(const pVal: ICallback); safecall;
+    function  Get_Key: WideString; safecall;
+    procedure Set_Key(const pVal: WideString); safecall;
+    property i: Double read Get_i write Set_i;
+    property j: Double read Get_j write Set_j;
+    property k: Double read Get_k write Set_k;
+    property LastErrorCode: Integer read Get_LastErrorCode;
+    property ErrorMsg[ErrorCode: Integer]: WideString read Get_ErrorMsg;
+    property GlobalCallback: ICallback read Get_GlobalCallback write Set_GlobalCallback;
+    property Key: WideString read Get_Key write Set_Key;
+  end;
+
+// *********************************************************************//
+// DispIntf:  IVectorDisp
+// Flags:     (4544) Dual NonExtensible OleAutomation Dispatchable
+// GUID:      {C60625AB-AD4C-405E-8CA2-62E36E4B3F73}
+// *********************************************************************//
+  IVectorDisp = dispinterface
+    ['{C60625AB-AD4C-405E-8CA2-62E36E4B3F73}']
+    property i: Double dispid 1;
+    property j: Double dispid 2;
+    property k: Double dispid 3;
+    procedure Normalize; dispid 4;
+    function  Dot(const V: IVector): Double; dispid 5;
+    function  CrossProduct(const V: IVector): IVector; dispid 6;
+    property LastErrorCode: Integer readonly dispid 7;
+    property ErrorMsg[ErrorCode: Integer]: WideString readonly dispid 8;
+    property GlobalCallback: ICallback dispid 9;
+    property Key: WideString dispid 10;
   end;
 
 // *********************************************************************//
@@ -832,10 +1128,16 @@ type
     function  Get_FileHandle: Integer; safecall;
     function  Get_ImageType: ImageType; safecall;
     function  Get_Picture: IPictureDisp; safecall;
-    procedure _Set_Picture(const pVal: IPictureDisp); safecall;
+    procedure Set_Picture(const pVal: IPictureDisp); safecall;
     function  Get_Filename: WideString; safecall;
     function  GetImageBitsDC(hDC: Integer): WordBool; safecall;
     function  SetImageBitsDC(hDC: Integer): WordBool; safecall;
+    procedure SetVisibleExtents(newMinX: Double; newMinY: Double; newMaxX: Double; newMaxY: Double; 
+                                newPixelsInView: Integer); safecall;
+    function  SetProjection(const Proj4: WideString): WordBool; safecall;
+    function  GetProjection: WideString; safecall;
+    procedure get_OriginalWidth(var OriginalWidth: Integer); safecall;
+    procedure get_OriginalHeight(var OriginalHeight: Integer); safecall;
     property Width: Integer read Get_Width;
     property Height: Integer read Get_Height;
     property YllCenter: Double read Get_YllCenter write Set_YllCenter;
@@ -853,7 +1155,7 @@ type
     property Key: WideString read Get_Key write Set_Key;
     property FileHandle: Integer read Get_FileHandle;
     property ImageType: ImageType read Get_ImageType;
-    property Picture: IPictureDisp read Get_Picture;
+    property Picture: IPictureDisp read Get_Picture write Set_Picture;
     property Filename: WideString read Get_Filename;
   end;
 
@@ -893,6 +1195,12 @@ type
     property Filename: WideString readonly dispid 25;
     function  GetImageBitsDC(hDC: Integer): WordBool; dispid 26;
     function  SetImageBitsDC(hDC: Integer): WordBool; dispid 27;
+    procedure SetVisibleExtents(newMinX: Double; newMinY: Double; newMaxX: Double; newMaxY: Double; 
+                                newPixelsInView: Integer); dispid 28;
+    function  SetProjection(const Proj4: WideString): WordBool; dispid 29;
+    function  GetProjection: WideString; dispid 30;
+    procedure get_OriginalWidth(var OriginalWidth: Integer); dispid 31;
+    procedure get_OriginalHeight(var OriginalHeight: Integer); dispid 32;
   end;
 
 // *********************************************************************//
@@ -945,6 +1253,10 @@ type
     function  PointInShapefile(x: Double; y: Double): Integer; safecall;
     function  BeginPointInShapefile: WordBool; safecall;
     procedure EndPointInShapefile; safecall;
+    function  Get_Projection: WideString; safecall;
+    procedure Set_Projection(const pVal: WideString); safecall;
+    function  Get_FieldByName(const Fieldname: WideString): IField; safecall;
+    function  Get_numPoints(ShapeIndex: Integer): Integer; safecall;
     property NumShapes: Integer read Get_NumShapes;
     property NumFields: Integer read Get_NumFields;
     property Extents: IExtents read Get_Extents;
@@ -961,6 +1273,9 @@ type
     property ErrorMsg[ErrorCode: Integer]: WideString read Get_ErrorMsg;
     property FileHandle: Integer read Get_FileHandle;
     property Filename: WideString read Get_Filename;
+    property Projection: WideString read Get_Projection write Set_Projection;
+    property FieldByName[const Fieldname: WideString]: IField read Get_FieldByName;
+    property numPoints[ShapeIndex: Integer]: Integer read Get_numPoints;
   end;
 
 // *********************************************************************//
@@ -1006,11 +1321,14 @@ type
     property Filename: WideString readonly dispid 31;
     function  QuickPoint(ShapeIndex: Integer; PointIndex: Integer): IPoint; dispid 32;
     function  QuickExtents(ShapeIndex: Integer): IExtents; dispid 33;
-    function  QuickPoints(ShapeIndex: Integer; var numPoints: Integer): {??PSafeArray}OleVariant; dispid 34;
+    function  QuickPoints(ShapeIndex: Integer; var numPoints: Integer): {??PSafeArray} OleVariant; dispid 34;
     function  PointInShape(ShapeIndex: Integer; x: Double; y: Double): WordBool; dispid 35;
     function  PointInShapefile(x: Double; y: Double): Integer; dispid 36;
     function  BeginPointInShapefile: WordBool; dispid 37;
     procedure EndPointInShapefile; dispid 38;
+    property Projection: WideString dispid 39;
+    property FieldByName[const Fieldname: WideString]: IField readonly dispid 40;
+    property numPoints[ShapeIndex: Integer]: Integer readonly dispid 41;
   end;
 
 // *********************************************************************//
@@ -1094,6 +1412,9 @@ type
     function  InsertPart(PointIndex: Integer; var PartIndex: Integer): WordBool; safecall;
     function  DeletePart(PartIndex: Integer): WordBool; safecall;
     function  Get_Extents: IExtents; safecall;
+    function  SerializeToString: WideString; safecall;
+    function  CreateFromString(const Serialized: WideString): WordBool; safecall;
+    function  PointInThisPoly(const pt: IPoint): WordBool; safecall;
     property numPoints: Integer read Get_numPoints;
     property NumParts: Integer read Get_NumParts;
     property ShapeType: ShpfileType read Get_ShapeType write Set_ShapeType;
@@ -1128,6 +1449,9 @@ type
     function  InsertPart(PointIndex: Integer; var PartIndex: Integer): WordBool; dispid 13;
     function  DeletePart(PartIndex: Integer): WordBool; dispid 14;
     property Extents: IExtents readonly dispid 15;
+    function  SerializeToString: WideString; dispid 16;
+    function  CreateFromString(const Serialized: WideString): WordBool; dispid 17;
+    function  PointInThisPoly(const pt: IPoint): WordBool; dispid 18;
   end;
 
 // *********************************************************************//
@@ -1389,7 +1713,7 @@ type
   IUtils = interface(IDispatch)
     ['{360BEC33-7703-4693-B6CA-90FEA22CF1B7}']
     function  PointInPolygon(const Shp: IShape; const TestPoint: IPoint): WordBool; safecall;
-    function  GridReplace(const Grd: IGrid; OldValue: OleVariant; NewValue: OleVariant; 
+    function  GridReplace(const Grd: IGrid; OldValue: OleVariant; newValue: OleVariant; 
                           const cBack: ICallback): WordBool; safecall;
     function  GridInterpolateNoData(const Grd: IGrid; const cBack: ICallback): WordBool; safecall;
     function  RemoveColinearPoints(const Shapes: IShapefile; LinearTolerance: Double; 
@@ -1418,6 +1742,14 @@ type
                               const GrdHeader: IGridHeader; Cellsize: Double; 
                               UseShapeNumber: WordBool; SingleValue: Smallint): IGrid; safecall;
     function  hBitmapToPicture(hBitmap: Integer): IPictureDisp; safecall;
+    function  GenerateHillShade(const bstrGridFilename: WideString; 
+                                const bstrShadeFilename: WideString; Z: Single; scale: Single; 
+                                az: Single; alt: Single): WordBool; safecall;
+    function  GenerateContour(const pszSrcFilename: WideString; const pszDstFilename: WideString; 
+                              dfInterval: Double; dfNoData: Double; Is3D: WordBool; 
+                              dblFLArray: OleVariant; const cBack: ICallback): WordBool; safecall;
+    function  TranslateRaster(const bstrSrcFilename: WideString; const bstrDstFilename: WideString; 
+                              const bstrOptions: WideString; const cBack: ICallback): WordBool; safecall;
     property Length[const Shape: IShape]: Double read Get_Length;
     property Perimeter[const Shape: IShape]: Double read Get_Perimeter;
     property Area[const Shape: IShape]: Double read Get_Area;
@@ -1435,7 +1767,7 @@ type
   IUtilsDisp = dispinterface
     ['{360BEC33-7703-4693-B6CA-90FEA22CF1B7}']
     function  PointInPolygon(const Shp: IShape; const TestPoint: IPoint): WordBool; dispid 1;
-    function  GridReplace(const Grd: IGrid; OldValue: OleVariant; NewValue: OleVariant; 
+    function  GridReplace(const Grd: IGrid; OldValue: OleVariant; newValue: OleVariant; 
                           const cBack: ICallback): WordBool; dispid 2;
     function  GridInterpolateNoData(const Grd: IGrid; const cBack: ICallback): WordBool; dispid 3;
     function  RemoveColinearPoints(const Shapes: IShapefile; LinearTolerance: Double; 
@@ -1462,184 +1794,14 @@ type
                               const GrdHeader: IGridHeader; Cellsize: Double; 
                               UseShapeNumber: WordBool; SingleValue: Smallint): IGrid; dispid 20;
     function  hBitmapToPicture(hBitmap: Integer): IPictureDisp; dispid 21;
-  end;
-
-// *********************************************************************//
-// Interface: IGridColorScheme
-// Flags:     (4544) Dual NonExtensible OleAutomation Dispatchable
-// GUID:      {1C43B56D-2065-4953-9138-31AFE8470FF5}
-// *********************************************************************//
-  IGridColorScheme = interface(IDispatch)
-    ['{1C43B56D-2065-4953-9138-31AFE8470FF5}']
-    function  Get_NumBreaks: Integer; safecall;
-    function  Get_AmbientIntensity: Double; safecall;
-    procedure Set_AmbientIntensity(pVal: Double); safecall;
-    function  Get_LightSourceIntensity: Double; safecall;
-    procedure Set_LightSourceIntensity(pVal: Double); safecall;
-    function  Get_LightSourceAzimuth: Double; safecall;
-    function  Get_LightSourceElevation: Double; safecall;
-    procedure SetLightSource(Azimuth: Double; Elevation: Double); safecall;
-    procedure InsertBreak(const BrkInfo: IGridColorBreak); safecall;
-    function  Get_Break(Index: Integer): IGridColorBreak; safecall;
-    procedure DeleteBreak(Index: Integer); safecall;
-    procedure Clear; safecall;
-    function  Get_NoDataColor: OLE_COLOR; safecall;
-    procedure Set_NoDataColor(pVal: OLE_COLOR); safecall;
-    procedure UsePredefined(LowValue: Double; HighValue: Double; Preset: PredefinedColorScheme); safecall;
-    function  GetLightSource: IVector; safecall;
-    function  Get_LastErrorCode: Integer; safecall;
-    function  Get_ErrorMsg(ErrorCode: Integer): WideString; safecall;
-    function  Get_GlobalCallback: ICallback; safecall;
-    procedure Set_GlobalCallback(const pVal: ICallback); safecall;
-    function  Get_Key: WideString; safecall;
-    procedure Set_Key(const pVal: WideString); safecall;
-    property NumBreaks: Integer read Get_NumBreaks;
-    property AmbientIntensity: Double read Get_AmbientIntensity write Set_AmbientIntensity;
-    property LightSourceIntensity: Double read Get_LightSourceIntensity write Set_LightSourceIntensity;
-    property LightSourceAzimuth: Double read Get_LightSourceAzimuth;
-    property LightSourceElevation: Double read Get_LightSourceElevation;
-    property Break[Index: Integer]: IGridColorBreak read Get_Break;
-    property NoDataColor: OLE_COLOR read Get_NoDataColor write Set_NoDataColor;
-    property LastErrorCode: Integer read Get_LastErrorCode;
-    property ErrorMsg[ErrorCode: Integer]: WideString read Get_ErrorMsg;
-    property GlobalCallback: ICallback read Get_GlobalCallback write Set_GlobalCallback;
-    property Key: WideString read Get_Key write Set_Key;
-  end;
-
-// *********************************************************************//
-// DispIntf:  IGridColorSchemeDisp
-// Flags:     (4544) Dual NonExtensible OleAutomation Dispatchable
-// GUID:      {1C43B56D-2065-4953-9138-31AFE8470FF5}
-// *********************************************************************//
-  IGridColorSchemeDisp = dispinterface
-    ['{1C43B56D-2065-4953-9138-31AFE8470FF5}']
-    property NumBreaks: Integer readonly dispid 1;
-    property AmbientIntensity: Double dispid 2;
-    property LightSourceIntensity: Double dispid 3;
-    property LightSourceAzimuth: Double readonly dispid 4;
-    property LightSourceElevation: Double readonly dispid 5;
-    procedure SetLightSource(Azimuth: Double; Elevation: Double); dispid 6;
-    procedure InsertBreak(const BrkInfo: IGridColorBreak); dispid 7;
-    property Break[Index: Integer]: IGridColorBreak readonly dispid 8;
-    procedure DeleteBreak(Index: Integer); dispid 9;
-    procedure Clear; dispid 10;
-    property NoDataColor: OLE_COLOR dispid 11;
-    procedure UsePredefined(LowValue: Double; HighValue: Double; Preset: PredefinedColorScheme); dispid 12;
-    function  GetLightSource: IVector; dispid 13;
-    property LastErrorCode: Integer readonly dispid 14;
-    property ErrorMsg[ErrorCode: Integer]: WideString readonly dispid 15;
-    property GlobalCallback: ICallback dispid 16;
-    property Key: WideString dispid 17;
-  end;
-
-// *********************************************************************//
-// Interface: IGridColorBreak
-// Flags:     (4544) Dual NonExtensible OleAutomation Dispatchable
-// GUID:      {1C6ECF5D-04FA-43C4-97B1-22D5FFB55FBD}
-// *********************************************************************//
-  IGridColorBreak = interface(IDispatch)
-    ['{1C6ECF5D-04FA-43C4-97B1-22D5FFB55FBD}']
-    function  Get_HighColor: OLE_COLOR; safecall;
-    procedure Set_HighColor(pVal: OLE_COLOR); safecall;
-    function  Get_LowColor: OLE_COLOR; safecall;
-    procedure Set_LowColor(pVal: OLE_COLOR); safecall;
-    function  Get_HighValue: Double; safecall;
-    procedure Set_HighValue(pVal: Double); safecall;
-    function  Get_LowValue: Double; safecall;
-    procedure Set_LowValue(pVal: Double); safecall;
-    function  Get_ColoringType: ColoringType; safecall;
-    procedure Set_ColoringType(pVal: ColoringType); safecall;
-    function  Get_GradientModel: GradientModel; safecall;
-    procedure Set_GradientModel(pVal: GradientModel); safecall;
-    function  Get_LastErrorCode: Integer; safecall;
-    function  Get_ErrorMsg(ErrorCode: Integer): WideString; safecall;
-    function  Get_GlobalCallback: ICallback; safecall;
-    procedure Set_GlobalCallback(const pVal: ICallback); safecall;
-    function  Get_Key: WideString; safecall;
-    procedure Set_Key(const pVal: WideString); safecall;
-    function  Get_Caption: WideString; safecall;
-    procedure Set_Caption(const pVal: WideString); safecall;
-    property HighColor: OLE_COLOR read Get_HighColor write Set_HighColor;
-    property LowColor: OLE_COLOR read Get_LowColor write Set_LowColor;
-    property HighValue: Double read Get_HighValue write Set_HighValue;
-    property LowValue: Double read Get_LowValue write Set_LowValue;
-    property ColoringType: ColoringType read Get_ColoringType write Set_ColoringType;
-    property GradientModel: GradientModel read Get_GradientModel write Set_GradientModel;
-    property LastErrorCode: Integer read Get_LastErrorCode;
-    property ErrorMsg[ErrorCode: Integer]: WideString read Get_ErrorMsg;
-    property GlobalCallback: ICallback read Get_GlobalCallback write Set_GlobalCallback;
-    property Key: WideString read Get_Key write Set_Key;
-    property Caption: WideString read Get_Caption write Set_Caption;
-  end;
-
-// *********************************************************************//
-// DispIntf:  IGridColorBreakDisp
-// Flags:     (4544) Dual NonExtensible OleAutomation Dispatchable
-// GUID:      {1C6ECF5D-04FA-43C4-97B1-22D5FFB55FBD}
-// *********************************************************************//
-  IGridColorBreakDisp = dispinterface
-    ['{1C6ECF5D-04FA-43C4-97B1-22D5FFB55FBD}']
-    property HighColor: OLE_COLOR dispid 1;
-    property LowColor: OLE_COLOR dispid 2;
-    property HighValue: Double dispid 3;
-    property LowValue: Double dispid 4;
-    property ColoringType: ColoringType dispid 5;
-    property GradientModel: GradientModel dispid 6;
-    property LastErrorCode: Integer readonly dispid 7;
-    property ErrorMsg[ErrorCode: Integer]: WideString readonly dispid 8;
-    property GlobalCallback: ICallback dispid 9;
-    property Key: WideString dispid 10;
-    property Caption: WideString dispid 11;
-  end;
-
-// *********************************************************************//
-// Interface: IVector
-// Flags:     (4544) Dual NonExtensible OleAutomation Dispatchable
-// GUID:      {C60625AB-AD4C-405E-8CA2-62E36E4B3F73}
-// *********************************************************************//
-  IVector = interface(IDispatch)
-    ['{C60625AB-AD4C-405E-8CA2-62E36E4B3F73}']
-    function  Get_i: Double; safecall;
-    procedure Set_i(pVal: Double); safecall;
-    function  Get_j: Double; safecall;
-    procedure Set_j(pVal: Double); safecall;
-    function  Get_k: Double; safecall;
-    procedure Set_k(pVal: Double); safecall;
-    procedure Normalize; safecall;
-    function  Dot(const V: IVector): Double; safecall;
-    function  CrossProduct(const V: IVector): IVector; safecall;
-    function  Get_LastErrorCode: Integer; safecall;
-    function  Get_ErrorMsg(ErrorCode: Integer): WideString; safecall;
-    function  Get_GlobalCallback: ICallback; safecall;
-    procedure Set_GlobalCallback(const pVal: ICallback); safecall;
-    function  Get_Key: WideString; safecall;
-    procedure Set_Key(const pVal: WideString); safecall;
-    property i: Double read Get_i write Set_i;
-    property j: Double read Get_j write Set_j;
-    property k: Double read Get_k write Set_k;
-    property LastErrorCode: Integer read Get_LastErrorCode;
-    property ErrorMsg[ErrorCode: Integer]: WideString read Get_ErrorMsg;
-    property GlobalCallback: ICallback read Get_GlobalCallback write Set_GlobalCallback;
-    property Key: WideString read Get_Key write Set_Key;
-  end;
-
-// *********************************************************************//
-// DispIntf:  IVectorDisp
-// Flags:     (4544) Dual NonExtensible OleAutomation Dispatchable
-// GUID:      {C60625AB-AD4C-405E-8CA2-62E36E4B3F73}
-// *********************************************************************//
-  IVectorDisp = dispinterface
-    ['{C60625AB-AD4C-405E-8CA2-62E36E4B3F73}']
-    property i: Double dispid 1;
-    property j: Double dispid 2;
-    property k: Double dispid 3;
-    procedure Normalize; dispid 4;
-    function  Dot(const V: IVector): Double; dispid 5;
-    function  CrossProduct(const V: IVector): IVector; dispid 6;
-    property LastErrorCode: Integer readonly dispid 7;
-    property ErrorMsg[ErrorCode: Integer]: WideString readonly dispid 8;
-    property GlobalCallback: ICallback dispid 9;
-    property Key: WideString dispid 10;
+    function  GenerateHillShade(const bstrGridFilename: WideString; 
+                                const bstrShadeFilename: WideString; Z: Single; scale: Single; 
+                                az: Single; alt: Single): WordBool; dispid 22;
+    function  GenerateContour(const pszSrcFilename: WideString; const pszDstFilename: WideString; 
+                              dfInterval: Double; dfNoData: Double; Is3D: WordBool; 
+                              dblFLArray: OleVariant; const cBack: ICallback): WordBool; dispid 23;
+    function  TranslateRaster(const bstrSrcFilename: WideString; const bstrDstFilename: WideString; 
+                              const bstrOptions: WideString; const cBack: ICallback): WordBool; dispid 24;
   end;
 
 // *********************************************************************//
@@ -1674,6 +1836,7 @@ type
     function  Get_IsNDTriangle(TriIndex: Integer): WordBool; safecall;
     procedure TriangleNeighbors(TriIndex: Integer; var triIndex1: Integer; var triIndex2: Integer; 
                                 var triIndex3: Integer); safecall;
+    function  CreateTinFromPoints(Points: PSafeArray): WordBool; safecall;
     property NumTriangles: Integer read Get_NumTriangles;
     property NumVertices: Integer read Get_NumVertices;
     property LastErrorCode: Integer read Get_LastErrorCode;
@@ -1715,6 +1878,7 @@ type
     property IsNDTriangle[TriIndex: Integer]: WordBool readonly dispid 18;
     procedure TriangleNeighbors(TriIndex: Integer; var triIndex1: Integer; var triIndex2: Integer; 
                                 var triIndex3: Integer); dispid 19;
+    function  CreateTinFromPoints(Points: {??PSafeArray} OleVariant): WordBool; dispid 20;
   end;
 
 
@@ -1738,6 +1902,7 @@ type
   TMapSelectBoxDrag = procedure(Sender: TObject; Left: Integer; Right: Integer; Bottom: Integer; 
                                                  Top: Integer) of object;
   TMapMapState = procedure(Sender: TObject; LayerHandle: Integer) of object;
+  TMapOnDrawBackBuffer = procedure(Sender: TObject; BackBuffer: Integer) of object;
 
   TMap = class(TOleControl)
   private
@@ -1749,6 +1914,7 @@ type
     FOnSelectBoxDrag: TMapSelectBoxDrag;
     FOnExtentsChanged: TNotifyEvent;
     FOnMapState: TMapMapState;
+    FOnDrawBackBuffer: TMapOnDrawBackBuffer;
     FIntf: _DMap;
     function  GetControlInterface: _DMap;
   protected
@@ -1826,12 +1992,36 @@ type
     function  Get_UDFillStipple(LayerHandle: Integer; StippleRow: Integer): Integer;
     procedure Set_UDFillStipple(LayerHandle: Integer; StippleRow: Integer; Param3: Integer);
     function  Get_UDPointType(LayerHandle: Integer): IDispatch;
-    procedure _Set_UDPointType(LayerHandle: Integer; const Param2: IDispatch);
+    procedure Set_UDPointType(LayerHandle: Integer; const Param2: IDispatch);
     function  Get_GetObject(LayerHandle: Integer): IDispatch;
     function  Get_LayerName(LayerHandle: Integer): WideString;
     procedure Set_LayerName(LayerHandle: Integer; const Param2: WideString);
     function  Get_GridFileName(LayerHandle: Integer): WideString;
     procedure Set_GridFileName(LayerHandle: Integer; const Param2: WideString);
+    function  Get_LayerLabelsShadow(LayerHandle: Integer): WordBool;
+    procedure Set_LayerLabelsShadow(LayerHandle: Integer; Param2: WordBool);
+    function  Get_LayerLabelsScale(LayerHandle: Integer): WordBool;
+    procedure Set_LayerLabelsScale(LayerHandle: Integer; Param2: WordBool);
+    function  Get_LayerLabelsOffset(LayerHandle: Integer): Integer;
+    procedure Set_LayerLabelsOffset(LayerHandle: Integer; Param2: Integer);
+    function  Get_LayerLabelsShadowColor(LayerHandle: Integer): OLE_COLOR;
+    procedure Set_LayerLabelsShadowColor(LayerHandle: Integer; Param2: OLE_COLOR);
+    function  Get_UseLabelCollision(LayerHandle: Integer): WordBool;
+    procedure Set_UseLabelCollision(LayerHandle: Integer; Param2: WordBool);
+    function  Get_ShapePointImageListID(LayerHandle: Integer; Shape: Integer): Integer;
+    procedure Set_ShapePointImageListID(LayerHandle: Integer; Shape: Integer; Param3: Integer);
+    function  Get_DrawingLabelsOffset(DrawHandle: Integer): Integer;
+    procedure Set_DrawingLabelsOffset(DrawHandle: Integer; Param2: Integer);
+    function  Get_DrawingLabelsScale(DrawHandle: Integer): WordBool;
+    procedure Set_DrawingLabelsScale(DrawHandle: Integer; Param2: WordBool);
+    function  Get_DrawingLabelsShadow(DrawHandle: Integer): WordBool;
+    procedure Set_DrawingLabelsShadow(DrawHandle: Integer; Param2: WordBool);
+    function  Get_DrawingLabelsShadowColor(DrawHandle: Integer): OLE_COLOR;
+    procedure Set_DrawingLabelsShadowColor(DrawHandle: Integer; Param2: OLE_COLOR);
+    function  Get_UseDrawingLabelCollision(DrawHandle: Integer): WordBool;
+    procedure Set_UseDrawingLabelCollision(DrawHandle: Integer; Param2: WordBool);
+    function  Get_DrawingLabelsVisible(DrawHandle: Integer): WordBool;
+    procedure Set_DrawingLabelsVisible(DrawHandle: Integer; Param2: WordBool);
   public
     procedure Redraw;
     function  AddLayer(const Object_: IDispatch; Visible: WordBool): Integer;
@@ -1855,7 +2045,7 @@ type
     function  SnapShot(const BoundBox: IDispatch): IDispatch;
     function  ApplyLegendColors(const Legend: IDispatch): WordBool;
     procedure LockWindow(LockMode: tkLockMode);
-    procedure ResizeMap(Width: Integer; Height: Integer);
+    procedure Resize(Width: Integer; Height: Integer);
     procedure ShowToolTip(const Text: WideString; Milliseconds: Integer);
     procedure AddLabel(LayerHandle: Integer; const Text: WideString; Color: OLE_COLOR; x: Double; 
                        y: Double; hJustification: tkHJustification);
@@ -1867,10 +2057,44 @@ type
     procedure DrawLine(x1: Double; y1: Double; x2: Double; y2: Double; pixelWidth: Integer; 
                        Color: OLE_COLOR);
     procedure DrawCircle(x: Double; y: Double; pixelRadius: Double; Color: OLE_COLOR; fill: WordBool);
-    procedure DrawPolygon(var xPts: Double; var yPts: Double; numPoints: Integer; Color: OLE_COLOR; 
-                          fill: WordBool);
+    procedure DrawPolygon(var xPoints: OleVariant; var yPoints: OleVariant; numPoints: Integer; 
+                          Color: OLE_COLOR; fill: WordBool);
     function  SetImageLayerColorScheme(LayerHandle: Integer; const ColorScheme: IDispatch): WordBool;
     procedure UpdateImage(LayerHandle: Integer);
+    procedure AddLabelEx(LayerHandle: Integer; const Text: WideString; Color: OLE_COLOR; x: Double; 
+                         y: Double; hJustification: tkHJustification; Rotation: Double);
+    procedure GetLayerStandardViewWidth(LayerHandle: Integer; var Width: Double);
+    procedure SetLayerStandardViewWidth(LayerHandle: Integer; Width: Double);
+    function  IsTIFFGrid(const Filename: WideString): WordBool;
+    function  IsSameProjection(const proj4_a: WideString; const proj4_b: WideString): WordBool;
+    procedure ZoomToMaxVisibleExtents;
+    function  HWnd: Integer;
+    function  set_UDPointImageListAdd(LayerHandle: Integer; const newValue: IDispatch): Integer;
+    function  get_UDPointImageListCount(LayerHandle: Integer): Integer;
+    function  get_UDPointImageListItem(LayerHandle: Integer; ImageIndex: Integer): IDispatch;
+    procedure ClearUDPointImageList(LayerHandle: Integer);
+    procedure DrawLineEx(LayerHandle: Integer; x1: Double; y1: Double; x2: Double; y2: Double; 
+                         pixelWidth: Integer; Color: OLE_COLOR);
+    procedure DrawPointEx(LayerHandle: Integer; x: Double; y: Double; pixelSize: Integer; 
+                          Color: OLE_COLOR);
+    procedure DrawCircleEx(LayerHandle: Integer; x: Double; y: Double; pixelRadius: Double; 
+                           Color: OLE_COLOR; fill: WordBool);
+    procedure LabelColor(LayerHandle: Integer; LabelFontColor: OLE_COLOR);
+    procedure SetDrawingLayerVisible(LayerHandle: Integer; Visiable: WordBool);
+    procedure ClearDrawingLabels(DrawHandle: Integer);
+    procedure DrawingFont(DrawHandle: Integer; const FontName: WideString; FontSize: Integer);
+    procedure AddDrawingLabelEx(DrawHandle: Integer; const Text: WideString; Color: OLE_COLOR; 
+                                x: Double; y: Double; hJustification: tkHJustification; 
+                                Rotation: Double);
+    procedure AddDrawingLabel(DrawHandle: Integer; const Text: WideString; Color: OLE_COLOR; 
+                              x: Double; y: Double; hJustification: tkHJustification);
+    procedure GetDrawingStandardViewWidth(DrawHandle: Integer; var Width: Double);
+    procedure SetDrawingStandardViewWidth(DrawHandle: Integer; Width: Double);
+    procedure DrawWidePolygon(var xPoints: OleVariant; var yPoints: OleVariant; numPoints: Integer; 
+                              Color: OLE_COLOR; fill: WordBool; Width: Smallint);
+    procedure DrawWideCircle(x: Double; y: Double; pixelRadius: Double; Color: OLE_COLOR; 
+                             fill: WordBool; Width: Smallint);
+    function  SnapShot2(ClippingLayerNbr: Integer; Zoom: Double; pWidth: Integer): IDispatch;
     property  ControlInterface: _DMap read GetControlInterface;
     property  DefaultInterface: _DMap read GetControlInterface;
     property GlobalCallback: IDispatch index 15 read GetIDispatchProp write SetIDispatchProp;
@@ -1910,10 +2134,22 @@ type
     property LayerLabelsVisible[LayerHandle: Integer]: WordBool read Get_LayerLabelsVisible write Set_LayerLabelsVisible;
     property UDLineStipple[LayerHandle: Integer]: Integer read Get_UDLineStipple write Set_UDLineStipple;
     property UDFillStipple[LayerHandle: Integer; StippleRow: Integer]: Integer read Get_UDFillStipple write Set_UDFillStipple;
-    property UDPointType[LayerHandle: Integer]: IDispatch read Get_UDPointType;
+    property UDPointType[LayerHandle: Integer]: IDispatch read Get_UDPointType write Set_UDPointType;
     property GetObject[LayerHandle: Integer]: IDispatch read Get_GetObject;
     property LayerName[LayerHandle: Integer]: WideString read Get_LayerName write Set_LayerName;
     property GridFileName[LayerHandle: Integer]: WideString read Get_GridFileName write Set_GridFileName;
+    property LayerLabelsShadow[LayerHandle: Integer]: WordBool read Get_LayerLabelsShadow write Set_LayerLabelsShadow;
+    property LayerLabelsScale[LayerHandle: Integer]: WordBool read Get_LayerLabelsScale write Set_LayerLabelsScale;
+    property LayerLabelsOffset[LayerHandle: Integer]: Integer read Get_LayerLabelsOffset write Set_LayerLabelsOffset;
+    property LayerLabelsShadowColor[LayerHandle: Integer]: OLE_COLOR read Get_LayerLabelsShadowColor write Set_LayerLabelsShadowColor;
+    property UseLabelCollision[LayerHandle: Integer]: WordBool read Get_UseLabelCollision write Set_UseLabelCollision;
+    property ShapePointImageListID[LayerHandle: Integer; Shape: Integer]: Integer read Get_ShapePointImageListID write Set_ShapePointImageListID;
+    property DrawingLabelsOffset[DrawHandle: Integer]: Integer read Get_DrawingLabelsOffset write Set_DrawingLabelsOffset;
+    property DrawingLabelsScale[DrawHandle: Integer]: WordBool read Get_DrawingLabelsScale write Set_DrawingLabelsScale;
+    property DrawingLabelsShadow[DrawHandle: Integer]: WordBool read Get_DrawingLabelsShadow write Set_DrawingLabelsShadow;
+    property DrawingLabelsShadowColor[DrawHandle: Integer]: OLE_COLOR read Get_DrawingLabelsShadowColor write Set_DrawingLabelsShadowColor;
+    property UseDrawingLabelCollision[DrawHandle: Integer]: WordBool read Get_UseDrawingLabelCollision write Set_UseDrawingLabelCollision;
+    property DrawingLabelsVisible[DrawHandle: Integer]: WordBool read Get_DrawingLabelsVisible write Set_DrawingLabelsVisible;
   published
     property  TabStop;
     property  Align;
@@ -1930,6 +2166,7 @@ type
     property  OnEnter;
     property  OnExit;
     property  OnStartDrag;
+    property  OnDblClick;
     property BackColor: TColor index 1 read GetTColorProp write SetTColorProp stored False;
     property ZoomPercent: Double index 2 read GetDoubleProp write SetDoubleProp stored False;
     property CursorMode: TOleEnum index 3 read GetTOleEnumProp write SetTOleEnumProp stored False;
@@ -1949,6 +2186,10 @@ type
     property IsLocked: TOleEnum index 19 read GetTOleEnumProp write SetTOleEnumProp stored False;
     property MapState: WideString index 20 read GetWideStringProp write SetWideStringProp stored False;
     property SerialNumber: WideString index 95 read GetWideStringProp write SetWideStringProp stored False;
+    property LineSeparationFactor: Integer index 96 read GetIntegerProp write SetIntegerProp stored False;
+    property SendOnDrawBackBuffer: WordBool index 118 read GetWordBoolProp write SetWordBoolProp stored False;
+    property MultilineLabels: WordBool index 133 read GetWordBoolProp write SetWordBoolProp stored False;
+    property MapResizeBehavior: TOleEnum index 108 read GetTOleEnumProp write SetTOleEnumProp stored False;
     property OnMouseDown: TMapMouseDown read FOnMouseDown write FOnMouseDown;
     property OnMouseUp: TMapMouseUp read FOnMouseUp write FOnMouseUp;
     property OnMouseMove: TMapMouseMove read FOnMouseMove write FOnMouseMove;
@@ -1957,6 +2198,7 @@ type
     property OnSelectBoxDrag: TMapSelectBoxDrag read FOnSelectBoxDrag write FOnSelectBoxDrag;
     property OnExtentsChanged: TNotifyEvent read FOnExtentsChanged write FOnExtentsChanged;
     property OnMapState: TMapMapState read FOnMapState write FOnMapState;
+    property OnDrawBackBuffer: TMapOnDrawBackBuffer read FOnDrawBackBuffer write FOnDrawBackBuffer;
   end;
 
 // *********************************************************************//
@@ -2177,22 +2419,19 @@ type
 
 procedure Register;
 
-resourcestring
-  dtlServerPage = 'ActiveX';
-
 implementation
 
 uses ComObj;
 
 procedure TMap.InitControlData;
 const
-  CEventDispIDs: array [0..7] of DWORD = (
+  CEventDispIDs: array [0..8] of DWORD = (
     $00000001, $00000002, $00000003, $00000004, $00000005, $00000006,
-    $00000007, $00000008);
+    $00000007, $00000008, $00000009);
   CControlData: TControlData2 = (
     ClassID: '{54F4C2F7-ED40-43B7-9D6F-E45965DF7F95}';
     EventIID: '{ABEA1545-08AB-4D5C-A594-D3017211EA95}';
-    EventCount: 8;
+    EventCount: 9;
     EventDispIDs: @CEventDispIDs;
     LicenseKey: nil (*HR:$80004005*);
     Flags: $00000000;
@@ -2245,14 +2484,8 @@ begin
 end;
 
 procedure TMap.Set_LayerKey(LayerHandle: Integer; const Param2: WideString);
-  { Warning: The property LayerKey has a setter and a getter whose
-  types do not match. Delphi was unable to generate a property of
-  this sort and so is using a Variant to set the property instead. }
-var
-  InterfaceVariant: OleVariant;
 begin
-  InterfaceVariant := DefaultInterface;
-  InterfaceVariant.LayerKey := Param2;
+  DefaultInterface.LayerKey[LayerHandle] := Param2;
 end;
 
 function  TMap.Get_LayerPosition(LayerHandle: Integer): Integer;
@@ -2526,14 +2759,8 @@ begin
 end;
 
 procedure TMap.Set_DrawingKey(DrawHandle: Integer; const Param2: WideString);
-  { Warning: The property DrawingKey has a setter and a getter whose
-  types do not match. Delphi was unable to generate a property of
-  this sort and so is using a Variant to set the property instead. }
-var
-  InterfaceVariant: OleVariant;
 begin
-  InterfaceVariant := DefaultInterface;
-  InterfaceVariant.DrawingKey := Param2;
+  DefaultInterface.DrawingKey[DrawHandle] := Param2;
 end;
 
 function  TMap.Get_ShapeLayerPointType(LayerHandle: Integer): tkPointType;
@@ -2591,15 +2818,9 @@ begin
   Result := DefaultInterface.UDPointType[LayerHandle];
 end;
 
-procedure TMap._Set_UDPointType(LayerHandle: Integer; const Param2: IDispatch);
-  { Warning: The property UDPointType has a setter and a getter whose
-  types do not match. Delphi was unable to generate a property of
-  this sort and so is using a Variant to set the property instead. }
-var
-  InterfaceVariant: OleVariant;
+procedure TMap.Set_UDPointType(LayerHandle: Integer; const Param2: IDispatch);
 begin
-  InterfaceVariant := DefaultInterface;
-  InterfaceVariant.UDPointType := Param2;
+  DefaultInterface.UDPointType[LayerHandle] := Param2;
 end;
 
 function  TMap.Get_GetObject(LayerHandle: Integer): IDispatch;
@@ -2613,14 +2834,8 @@ begin
 end;
 
 procedure TMap.Set_LayerName(LayerHandle: Integer; const Param2: WideString);
-  { Warning: The property LayerName has a setter and a getter whose
-  types do not match. Delphi was unable to generate a property of
-  this sort and so is using a Variant to set the property instead. }
-var
-  InterfaceVariant: OleVariant;
 begin
-  InterfaceVariant := DefaultInterface;
-  InterfaceVariant.LayerName := Param2;
+  DefaultInterface.LayerName[LayerHandle] := Param2;
 end;
 
 function  TMap.Get_GridFileName(LayerHandle: Integer): WideString;
@@ -2629,14 +2844,128 @@ begin
 end;
 
 procedure TMap.Set_GridFileName(LayerHandle: Integer; const Param2: WideString);
-  { Warning: The property GridFileName has a setter and a getter whose
-  types do not match. Delphi was unable to generate a property of
-  this sort and so is using a Variant to set the property instead. }
-var
-  InterfaceVariant: OleVariant;
 begin
-  InterfaceVariant := DefaultInterface;
-  InterfaceVariant.GridFileName := Param2;
+  DefaultInterface.GridFileName[LayerHandle] := Param2;
+end;
+
+function  TMap.Get_LayerLabelsShadow(LayerHandle: Integer): WordBool;
+begin
+  Result := DefaultInterface.LayerLabelsShadow[LayerHandle];
+end;
+
+procedure TMap.Set_LayerLabelsShadow(LayerHandle: Integer; Param2: WordBool);
+begin
+  DefaultInterface.LayerLabelsShadow[LayerHandle] := Param2;
+end;
+
+function  TMap.Get_LayerLabelsScale(LayerHandle: Integer): WordBool;
+begin
+  Result := DefaultInterface.LayerLabelsScale[LayerHandle];
+end;
+
+procedure TMap.Set_LayerLabelsScale(LayerHandle: Integer; Param2: WordBool);
+begin
+  DefaultInterface.LayerLabelsScale[LayerHandle] := Param2;
+end;
+
+function  TMap.Get_LayerLabelsOffset(LayerHandle: Integer): Integer;
+begin
+  Result := DefaultInterface.LayerLabelsOffset[LayerHandle];
+end;
+
+procedure TMap.Set_LayerLabelsOffset(LayerHandle: Integer; Param2: Integer);
+begin
+  DefaultInterface.LayerLabelsOffset[LayerHandle] := Param2;
+end;
+
+function  TMap.Get_LayerLabelsShadowColor(LayerHandle: Integer): OLE_COLOR;
+begin
+  Result := DefaultInterface.LayerLabelsShadowColor[LayerHandle];
+end;
+
+procedure TMap.Set_LayerLabelsShadowColor(LayerHandle: Integer; Param2: OLE_COLOR);
+begin
+  DefaultInterface.LayerLabelsShadowColor[LayerHandle] := Param2;
+end;
+
+function  TMap.Get_UseLabelCollision(LayerHandle: Integer): WordBool;
+begin
+  Result := DefaultInterface.UseLabelCollision[LayerHandle];
+end;
+
+procedure TMap.Set_UseLabelCollision(LayerHandle: Integer; Param2: WordBool);
+begin
+  DefaultInterface.UseLabelCollision[LayerHandle] := Param2;
+end;
+
+function  TMap.Get_ShapePointImageListID(LayerHandle: Integer; Shape: Integer): Integer;
+begin
+  Result := DefaultInterface.ShapePointImageListID[LayerHandle, Shape];
+end;
+
+procedure TMap.Set_ShapePointImageListID(LayerHandle: Integer; Shape: Integer; Param3: Integer);
+begin
+  DefaultInterface.ShapePointImageListID[LayerHandle, Shape] := Param3;
+end;
+
+function  TMap.Get_DrawingLabelsOffset(DrawHandle: Integer): Integer;
+begin
+  Result := DefaultInterface.DrawingLabelsOffset[DrawHandle];
+end;
+
+procedure TMap.Set_DrawingLabelsOffset(DrawHandle: Integer; Param2: Integer);
+begin
+  DefaultInterface.DrawingLabelsOffset[DrawHandle] := Param2;
+end;
+
+function  TMap.Get_DrawingLabelsScale(DrawHandle: Integer): WordBool;
+begin
+  Result := DefaultInterface.DrawingLabelsScale[DrawHandle];
+end;
+
+procedure TMap.Set_DrawingLabelsScale(DrawHandle: Integer; Param2: WordBool);
+begin
+  DefaultInterface.DrawingLabelsScale[DrawHandle] := Param2;
+end;
+
+function  TMap.Get_DrawingLabelsShadow(DrawHandle: Integer): WordBool;
+begin
+  Result := DefaultInterface.DrawingLabelsShadow[DrawHandle];
+end;
+
+procedure TMap.Set_DrawingLabelsShadow(DrawHandle: Integer; Param2: WordBool);
+begin
+  DefaultInterface.DrawingLabelsShadow[DrawHandle] := Param2;
+end;
+
+function  TMap.Get_DrawingLabelsShadowColor(DrawHandle: Integer): OLE_COLOR;
+begin
+  Result := DefaultInterface.DrawingLabelsShadowColor[DrawHandle];
+end;
+
+procedure TMap.Set_DrawingLabelsShadowColor(DrawHandle: Integer; Param2: OLE_COLOR);
+begin
+  DefaultInterface.DrawingLabelsShadowColor[DrawHandle] := Param2;
+end;
+
+function  TMap.Get_UseDrawingLabelCollision(DrawHandle: Integer): WordBool;
+begin
+  Result := DefaultInterface.UseDrawingLabelCollision[DrawHandle];
+end;
+
+procedure TMap.Set_UseDrawingLabelCollision(DrawHandle: Integer; Param2: WordBool);
+begin
+  DefaultInterface.UseDrawingLabelCollision[DrawHandle] := Param2;
+end;
+
+function  TMap.Get_DrawingLabelsVisible(DrawHandle: Integer): WordBool;
+begin
+  Result := DefaultInterface.DrawingLabelsVisible[DrawHandle];
+end;
+
+procedure TMap.Set_DrawingLabelsVisible(DrawHandle: Integer; Param2: WordBool);
+begin
+  DefaultInterface.DrawingLabelsVisible[DrawHandle] := Param2;
 end;
 
 procedure TMap.Redraw;
@@ -2646,7 +2975,7 @@ end;
 
 function  TMap.AddLayer(const Object_: IDispatch; Visible: WordBool): Integer;
 begin
-  AddLayer := DefaultInterface.AddLayer(Object_, Visible);
+  Result := DefaultInterface.AddLayer(Object_, Visible);
 end;
 
 procedure TMap.RemoveLayer(LayerHandle: Integer);
@@ -2661,27 +2990,27 @@ end;
 
 function  TMap.MoveLayerUp(InitialPosition: Integer): WordBool;
 begin
-  MoveLayerUP := DefaultInterface.MoveLayerUp(InitialPosition);
+  Result := DefaultInterface.MoveLayerUp(InitialPosition);
 end;
 
 function  TMap.MoveLayerDown(InitialPosition: Integer): WordBool;
 begin
-  MoveLayerDown := DefaultInterface.MoveLayerDown(InitialPosition);
+  Result := DefaultInterface.MoveLayerDown(InitialPosition);
 end;
 
 function  TMap.MoveLayer(InitialPosition: Integer; TargetPosition: Integer): WordBool;
 begin
-  MoveLayer := DefaultInterface.MoveLayer(InitialPosition, TargetPosition);
+  Result := DefaultInterface.MoveLayer(InitialPosition, TargetPosition);
 end;
 
 function  TMap.MoveLayerTop(InitialPosition: Integer): WordBool;
 begin
-  MoveLayerTop := DefaultInterface.MoveLayerTop(InitialPosition);
+  Result := DefaultInterface.MoveLayerTop(InitialPosition);
 end;
 
 function  TMap.MoveLayerBottom(InitialPosition: Integer): WordBool;
 begin
-  MoveLayerBottom := DefaultInterface.MoveLayerBottom(InitialPosition);
+  Result := DefaultInterface.MoveLayerBottom(InitialPosition);
 end;
 
 procedure TMap.ZoomToMaxExtents;
@@ -2711,7 +3040,7 @@ end;
 
 function  TMap.ZoomToPrev: Integer;
 begin
-  ZoomToPrev := DefaultInterface.ZoomToPrev;
+  Result := DefaultInterface.ZoomToPrev;
 end;
 
 procedure TMap.ProjToPixel(projX: Double; projY: Double; var pixelX: Double; var pixelY: Double);
@@ -2736,12 +3065,12 @@ end;
 
 function  TMap.SnapShot(const BoundBox: IDispatch): IDispatch;
 begin
-  DefaultInterface.SnapShot(BoundBox);
+  Result := DefaultInterface.SnapShot(BoundBox);
 end;
 
 function  TMap.ApplyLegendColors(const Legend: IDispatch): WordBool;
 begin
-  ApplyLegendColors := DefaultInterface.ApplyLegendColors(Legend);
+  Result := DefaultInterface.ApplyLegendColors(Legend);
 end;
 
 procedure TMap.LockWindow(LockMode: tkLockMode);
@@ -2749,7 +3078,7 @@ begin
   DefaultInterface.LockWindow(LockMode);
 end;
 
-procedure TMap.ResizeMap(Width: Integer; Height: Integer);
+procedure TMap.Resize(Width: Integer; Height: Integer);
 begin
   DefaultInterface.Resize(Width, Height);
 end;
@@ -2777,12 +3106,12 @@ end;
 
 function  TMap.GetColorScheme(LayerHandle: Integer): IDispatch;
 begin
-  DefaultInterface.GetColorScheme(LayerHandle);
+  Result := DefaultInterface.GetColorScheme(LayerHandle);
 end;
 
 function  TMap.NewDrawing(Projection: tkDrawReferenceList): Integer;
 begin
-  NewDrawing := DefaultInterface.NewDrawing(Projection);
+  Result := DefaultInterface.NewDrawing(Projection);
 end;
 
 procedure TMap.DrawPoint(x: Double; y: Double; pixelSize: Integer; Color: OLE_COLOR);
@@ -2802,20 +3131,154 @@ begin
   DefaultInterface.DrawCircle(x, y, pixelRadius, Color, fill);
 end;
 
-procedure TMap.DrawPolygon(var xPts: Double; var yPts: Double; numPoints: Integer; 
+procedure TMap.DrawPolygon(var xPoints: OleVariant; var yPoints: OleVariant; numPoints: Integer; 
                            Color: OLE_COLOR; fill: WordBool);
 begin
-  DefaultInterface.DrawPolygon(xPts, yPts, numPoints, Color, fill);
+  DefaultInterface.DrawPolygon(xPoints, yPoints, numPoints, Color, fill);
 end;
 
 function  TMap.SetImageLayerColorScheme(LayerHandle: Integer; const ColorScheme: IDispatch): WordBool;
 begin
-  SetImageLayerColorScheme := DefaultInterface.SetImageLayerColorScheme(LayerHandle, ColorScheme);
+  Result := DefaultInterface.SetImageLayerColorScheme(LayerHandle, ColorScheme);
 end;
 
 procedure TMap.UpdateImage(LayerHandle: Integer);
 begin
   DefaultInterface.UpdateImage(LayerHandle);
+end;
+
+procedure TMap.AddLabelEx(LayerHandle: Integer; const Text: WideString; Color: OLE_COLOR; 
+                          x: Double; y: Double; hJustification: tkHJustification; Rotation: Double);
+begin
+  DefaultInterface.AddLabelEx(LayerHandle, Text, Color, x, y, hJustification, Rotation);
+end;
+
+procedure TMap.GetLayerStandardViewWidth(LayerHandle: Integer; var Width: Double);
+begin
+  DefaultInterface.GetLayerStandardViewWidth(LayerHandle, Width);
+end;
+
+procedure TMap.SetLayerStandardViewWidth(LayerHandle: Integer; Width: Double);
+begin
+  DefaultInterface.SetLayerStandardViewWidth(LayerHandle, Width);
+end;
+
+function  TMap.IsTIFFGrid(const Filename: WideString): WordBool;
+begin
+  Result := DefaultInterface.IsTIFFGrid(Filename);
+end;
+
+function  TMap.IsSameProjection(const proj4_a: WideString; const proj4_b: WideString): WordBool;
+begin
+  Result := DefaultInterface.IsSameProjection(proj4_a, proj4_b);
+end;
+
+procedure TMap.ZoomToMaxVisibleExtents;
+begin
+  DefaultInterface.ZoomToMaxVisibleExtents;
+end;
+
+function  TMap.HWnd: Integer;
+begin
+  Result := DefaultInterface.HWnd;
+end;
+
+function  TMap.set_UDPointImageListAdd(LayerHandle: Integer; const newValue: IDispatch): Integer;
+begin
+  Result := DefaultInterface.set_UDPointImageListAdd(LayerHandle, newValue);
+end;
+
+function  TMap.get_UDPointImageListCount(LayerHandle: Integer): Integer;
+begin
+  Result := DefaultInterface.get_UDPointImageListCount(LayerHandle);
+end;
+
+function  TMap.get_UDPointImageListItem(LayerHandle: Integer; ImageIndex: Integer): IDispatch;
+begin
+  Result := DefaultInterface.get_UDPointImageListItem(LayerHandle, ImageIndex);
+end;
+
+procedure TMap.ClearUDPointImageList(LayerHandle: Integer);
+begin
+  DefaultInterface.ClearUDPointImageList(LayerHandle);
+end;
+
+procedure TMap.DrawLineEx(LayerHandle: Integer; x1: Double; y1: Double; x2: Double; y2: Double; 
+                          pixelWidth: Integer; Color: OLE_COLOR);
+begin
+  DefaultInterface.DrawLineEx(LayerHandle, x1, y1, x2, y2, pixelWidth, Color);
+end;
+
+procedure TMap.DrawPointEx(LayerHandle: Integer; x: Double; y: Double; pixelSize: Integer; 
+                           Color: OLE_COLOR);
+begin
+  DefaultInterface.DrawPointEx(LayerHandle, x, y, pixelSize, Color);
+end;
+
+procedure TMap.DrawCircleEx(LayerHandle: Integer; x: Double; y: Double; pixelRadius: Double; 
+                            Color: OLE_COLOR; fill: WordBool);
+begin
+  DefaultInterface.DrawCircleEx(LayerHandle, x, y, pixelRadius, Color, fill);
+end;
+
+procedure TMap.LabelColor(LayerHandle: Integer; LabelFontColor: OLE_COLOR);
+begin
+  DefaultInterface.LabelColor(LayerHandle, LabelFontColor);
+end;
+
+procedure TMap.SetDrawingLayerVisible(LayerHandle: Integer; Visiable: WordBool);
+begin
+  DefaultInterface.SetDrawingLayerVisible(LayerHandle, Visiable);
+end;
+
+procedure TMap.ClearDrawingLabels(DrawHandle: Integer);
+begin
+  DefaultInterface.ClearDrawingLabels(DrawHandle);
+end;
+
+procedure TMap.DrawingFont(DrawHandle: Integer; const FontName: WideString; FontSize: Integer);
+begin
+  DefaultInterface.DrawingFont(DrawHandle, FontName, FontSize);
+end;
+
+procedure TMap.AddDrawingLabelEx(DrawHandle: Integer; const Text: WideString; Color: OLE_COLOR; 
+                                 x: Double; y: Double; hJustification: tkHJustification; 
+                                 Rotation: Double);
+begin
+  DefaultInterface.AddDrawingLabelEx(DrawHandle, Text, Color, x, y, hJustification, Rotation);
+end;
+
+procedure TMap.AddDrawingLabel(DrawHandle: Integer; const Text: WideString; Color: OLE_COLOR; 
+                               x: Double; y: Double; hJustification: tkHJustification);
+begin
+  DefaultInterface.AddDrawingLabel(DrawHandle, Text, Color, x, y, hJustification);
+end;
+
+procedure TMap.GetDrawingStandardViewWidth(DrawHandle: Integer; var Width: Double);
+begin
+  DefaultInterface.GetDrawingStandardViewWidth(DrawHandle, Width);
+end;
+
+procedure TMap.SetDrawingStandardViewWidth(DrawHandle: Integer; Width: Double);
+begin
+  DefaultInterface.SetDrawingStandardViewWidth(DrawHandle, Width);
+end;
+
+procedure TMap.DrawWidePolygon(var xPoints: OleVariant; var yPoints: OleVariant; 
+                               numPoints: Integer; Color: OLE_COLOR; fill: WordBool; Width: Smallint);
+begin
+  DefaultInterface.DrawWidePolygon(xPoints, yPoints, numPoints, Color, fill, Width);
+end;
+
+procedure TMap.DrawWideCircle(x: Double; y: Double; pixelRadius: Double; Color: OLE_COLOR; 
+                              fill: WordBool; Width: Smallint);
+begin
+  DefaultInterface.DrawWideCircle(x, y, pixelRadius, Color, fill, Width);
+end;
+
+function  TMap.SnapShot2(ClippingLayerNbr: Integer; Zoom: Double; pWidth: Integer): IDispatch;
+begin
+  Result := DefaultInterface.SnapShot2(ClippingLayerNbr, Zoom, pWidth);
 end;
 
 class function CoShapefileColorScheme.Create: IShapefileColorScheme;
