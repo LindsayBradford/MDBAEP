@@ -610,9 +610,13 @@ begin
      if (iNumberOfZones < 2) then
      //   ComboOutputToMap.Items.Add('Zone');
         AChild.ComboOutputToMap.Items.Add('Selection Frequency ' + ReturnZoneName(1) + ' Zone');
-     for iCount := 1 to iNumberOfZones do
-         ComboOutputToMap.Items.Add('Selection Frequency ' + ReturnZoneName(iCount) + ' Zone');
+
+//     for iCount := 1 to iNumberOfZones do
+//       ComboOutputToMap.Items.Add('Selection Frequency ' + ReturnZoneName(iCount) + ' Zone');
+
      ComboOutputToMap.Items.Add('Best Solution');
+     ComboOutputToMap.Items.Add('Heuristic Order');
+(*
      for iCount := 1 to iNumberOfRuns do
          ComboOutputToMap.Items.Add('Solution ' + IntToStr(iCount));
 
@@ -644,6 +648,7 @@ begin
                    AChild.ComboOutputToMap.Text := 'Selection Frequency ' + ReturnZoneName(ReturnDisplayZoneIndex) + ' Zone';
           end;
      end;
+     *)
 end;
 
 procedure TMarxanInterfaceForm.AutoloadPathname;
