@@ -1,4 +1,4 @@
-program OrderedHeuristicsZC;
+program MDBAEP;
 
 uses
   Forms,
@@ -64,7 +64,7 @@ uses
 
 begin
   Application.Initialize;
-  Application.Title := 'Ordered Hauristics ZC';
+  Application.Title := 'MDBAEP';
   sParameterCalled := '';
   if (ParamCount > 0) then
      sParameterCalled := ParamStr(1);

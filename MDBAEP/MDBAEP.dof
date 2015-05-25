@@ -56,7 +56,7 @@ ActiveLang=
 ProjectLang=$00000409
 RootDir=
 [Version Info]
-IncludeVerInfo=0
+IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
 MinorVer=0
@@ -70,14 +70,14 @@ DLL=0
 Locale=3081
 CodePage=1252
 [Version Info Keys]
-CompanyName=
-FileDescription=
+CompanyName=Griffith University
+FileDescription=MDBA Ecological Prioritisation
 FileVersion=1.0.0.0
 InternalName=
-LegalCopyright=
+LegalCopyright=© 2015, University of Queensland, Grffith University
 LegalTrademarks=
 OriginalFilename=
-ProductName=
+ProductName=MDBAEP
 ProductVersion=1.0.0.0
 Comments=
 [HistoryLists\hlUnitAliases]
