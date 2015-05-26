@@ -12,7 +12,7 @@ unit MapWinGIS_TLB;
 // ************************************************************************ //
 
 // PASTLWTR : $Revision:   1.88  $
-// File generated on 22/05/2015 3:47:47 PM from Type Library described below.
+// File generated on 26/05/2015 3:41:58 PM from Type Library described below.
 
 // ************************************************************************ //
 // Type Lib: C:\Program Files (x86)\Common Files\MapWindow\MapWinGIS.ocx (1)

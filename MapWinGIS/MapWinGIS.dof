@@ -37,14 +37,14 @@ RemoteSymbols=0
 MinStackSize=16384
 MaxStackSize=1048576
 ImageBase=4194304
-ExeDescription=MapWinGIS ActiveX Control
+ExeDescription=MapWindows OCX Component
 [Directories]
 OutputDir=
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=
-Packages=
+Packages=Vcl50;Vclx50;VclSmp50;Qrpt50;Vcldb50;Vclbde50;ibevnt50;vcldbx50;TeeUI50;TeeDB50;Tee50;TeeQR50;VCLIB50;vclie50;Inetdb50;Inet50;NMFast50;dclocx50;dclaxserver50
 Conditionals=
 DebugSourceDirs=
 UsePackages=0
@@ -53,7 +53,7 @@ RunParams=
 HostApplication=
 [Language]
 ActiveLang=
-ProjectLang=
+ProjectLang=$00000C09
 RootDir=
 [Version Info]
 IncludeVerInfo=1
@@ -80,29 +80,3 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=
-[HistoryLists\hlUnitAliases]
-Count=1
-Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
-[HistoryLists\hlSearchPath]
-Count=2
-Item0=.;.\DPARRAY
-Item1=C:\Data\ARI Senior Software Engineer\MDBA\Data\ZC\source\ZonaeCogito
-[HistoryLists\hlUnitOutputDirectory]
-Count=3
-Item0=..\..\lib
-Item1=$(DELPHI)\Lib
-Item2=${DELPHI}\Lib
-[HistoryLists\hlOutputDirectorry]
-Count=2
-Item0=..\..\bin
-Item1=C:\Data\ARI Senior Software Engineer\MDBA\Data\ZC\bin
-[HistoryLists\hlBPLOutput]
-Count=3
-Item0=..\..\lib
-Item1=$(DELPHI)\Lib
-Item2=${DELPHI{\Lib
-[HistoryLists\hlDCPOutput]
-Count=3
-Item0=..\..\lib
-Item1=$(DELPHI)\Lib
-Item2=${DELPHI}\Lib

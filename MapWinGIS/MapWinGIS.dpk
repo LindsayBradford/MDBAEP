@@ -1,7 +1,7 @@
 package MapWinGIS;
 
 {$R *.RES}
-{$R 'MapWinGIS_TLB.dcr'}
+{$R '..\MapWinGIS_TLB.dcr'}
 {$ALIGN ON}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
@@ -23,13 +23,13 @@ package MapWinGIS;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'MapWinGIS ActiveX Control'}
+{$DESCRIPTION 'MapWindows OCX Component'}
 {$IMPLICITBUILD OFF}
 
 requires
   vcl50;
 
 contains
-  MapWinGIS_TLB in 'MapWinGIS_TLB.pas';
+  MapWinGIS_TLB in '..\MapWinGIS_TLB.pas';
 
 end.
