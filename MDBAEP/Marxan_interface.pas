@@ -607,23 +607,22 @@ begin
      sComboText := ComboOutputToMap.Text;
 
      ComboOutputToMap.Items.Clear;
+     ComboOutputToMap.Items.Add('Best Solution');
+     (*
      if (iNumberOfZones < 2) then
      //   ComboOutputToMap.Items.Add('Zone');
         AChild.ComboOutputToMap.Items.Add('Selection Frequency ' + ReturnZoneName(1) + ' Zone');
+     for iCount := 1 to iNumberOfZones do
+         ComboOutputToMap.Items.Add('Selection Frequency ' + ReturnZoneName(iCount) + ' Zone');
 
-//     for iCount := 1 to iNumberOfZones do
-//       ComboOutputToMap.Items.Add('Selection Frequency ' + ReturnZoneName(iCount) + ' Zone');
 
-     ComboOutputToMap.Items.Add('Best Solution');
-     ComboOutputToMap.Items.Add('Heuristic Order');
-(*
      for iCount := 1 to iNumberOfRuns do
          ComboOutputToMap.Items.Add('Solution ' + IntToStr(iCount));
-
+     *)
      if (ComboOutputToMap.Items.IndexOf(sComboText) > -1) then
         ComboOutputToMap.Text := sComboText
      else
-         ComboOutputToMap.Text := 'Selection Frequency ' + ReturnZoneName(ReturnDisplayZoneIndex) + ' Zone';
+         ComboOutputToMap.Text := 'Best Solution';
 
      iGISChild := SCPForm.ReturnGISChildIndex;
      if (iGISChild > -1) then
@@ -633,22 +632,26 @@ begin
           if (AChild <> nil) then
           begin
                AChild.ComboOutputToMap.Items.Clear;
+
+               (*
                if (iNumberOfZones < 2) then
                //   AChild.ComboOutputToMap.Items.Add('Zone');
                   AChild.ComboOutputToMap.Items.Add('Selection Frequency ' + ReturnZoneName(1) + ' Zone');
+
                for iCount := 1 to iNumberOfZones do
                    AChild.ComboOutputToMap.Items.Add('Selection Frequency ' + ReturnZoneName(iCount) + ' Zone');
-               AChild.ComboOutputToMap.Items.Add('Best Solution');
                for iCount := 1 to iNumberOfRuns do
                    AChild.ComboOutputToMap.Items.Add('Solution ' + IntToStr(iCount));
+               *)
+
+               AChild.ComboOutputToMap.Items.Add('Best Solution');
 
                if (AChild.ComboOutputToMap.Items.IndexOf(sComboText) > -1) then
                   AChild.ComboOutputToMap.Text := sComboText
                else
-                   AChild.ComboOutputToMap.Text := 'Selection Frequency ' + ReturnZoneName(ReturnDisplayZoneIndex) + ' Zone';
+                   AChild.ComboOutputToMap.Text := 'Best Solution';
           end;
      end;
-     *)
 end;
 
 procedure TMarxanInterfaceForm.AutoloadPathname;

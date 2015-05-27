@@ -2961,7 +2961,7 @@ begin
      if (sParameterCalled <> '') then
         FileOpen(sParameterCalled);
 
-     Caption := 'Ordered Heuristics ZC ' + sVersionString;
+     Caption := 'MDBAEP ' + sVersionString;
 
      f64BitOS := Detect64BitOS;
      fMarZone := False;
