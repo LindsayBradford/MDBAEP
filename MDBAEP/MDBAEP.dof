@@ -46,7 +46,7 @@ PackageDCPOutputDir=..\..\lib
 SearchPath=.;.\DPARRAY
 Packages=Vcl40;Vclx40;Vcldb40;vcldbx40;VclSmp40;Qrpt40;MapWinGIS
 Conditionals=
-DebugSourceDirs=.
+DebugSourceDirs=.;C:\Data\ARI Senior Software Engineer\MDBAEP\03.SoftwareDevelopment\MDBAEP\source\MapWinGIS\
 UsePackages=0
 [Parameters]
 RunParams=

@@ -80,3 +80,29 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=
+[HistoryLists\hlUnitAliases]
+Count=1
+Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
+[HistoryLists\hlSearchPath]
+Count=2
+Item0=.;.\DPARRAY
+Item1=C:\Data\ARI Senior Software Engineer\MDBA\Data\ZC\source\ZonaeCogito
+[HistoryLists\hlUnitOutputDirectory]
+Count=3
+Item0=..\..\lib
+Item1=$(DELPHI)\Lib
+Item2=${DELPHI}\Lib
+[HistoryLists\hlOutputDirectorry]
+Count=2
+Item0=..\..\bin
+Item1=C:\Data\ARI Senior Software Engineer\MDBA\Data\ZC\bin
+[HistoryLists\hlBPLOutput]
+Count=3
+Item0=..\..\lib
+Item1=$(DELPHI)\Lib
+Item2=${DELPHI{\Lib
+[HistoryLists\hlDCPOutput]
+Count=3
+Item0=..\..\lib
+Item1=$(DELPHI)\Lib
+Item2=${DELPHI}\Lib
