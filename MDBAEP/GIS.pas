@@ -1196,7 +1196,7 @@ begin
         Table1.Open;
 
         Query1.SQL.Clear;
-        Query1.SQL.Add('ALTER TABLE "' + Table1.DatabaseName + '\' + sTableName + '"');
+        Query1.SQL.Add('ALTER TABLE "' + Table1.DatabaseName + sTableName + '"');
 
         iFieldsToAdd := 0;
         AddStr4Field('DISPLAY');
@@ -3447,7 +3447,7 @@ begin
         if not fFieldExists then
         begin
              Query1.SQL.Clear;
-             Query1.SQL.Add('ALTER TABLE "' + Table1.DatabaseName + '\' + Table1.TableName + '"');
+             Query1.SQL.Add('ALTER TABLE "' + Table1.DatabaseName + Table1.TableName + '"');
              Query1.SQL.Add('ADD ZCSELECT NUMERIC(10,0)');
 
              try

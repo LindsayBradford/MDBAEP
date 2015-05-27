@@ -537,7 +537,7 @@ begin
         ThemeTable.TableName := sTableName;
 
         ThemeQuery.SQL.Clear;
-        ThemeQuery.SQL.Add('ALTER TABLE "' + ThemeTable.DatabaseName + '\' + sTableName + '"');
+        ThemeQuery.SQL.Add('ALTER TABLE "' + ThemeTable.DatabaseName + sTableName + '"');
 
         ThemeTable.Open;
 
@@ -605,7 +605,7 @@ begin
         ThemeTable.TableName := sTableName;
 
         ThemeQuery.SQL.Clear;
-        ThemeQuery.SQL.Add('ALTER TABLE "' + ThemeTable.DatabaseName + '\' + sTableName + '"');
+        ThemeQuery.SQL.Add('ALTER TABLE "' + ThemeTable.DatabaseName + sTableName + '"');
 
         ThemeTable.Open;
 
