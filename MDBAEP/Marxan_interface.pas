@@ -88,6 +88,7 @@ type
     function ReturnZoneName(const iZone : integer) : string;
     function ReturnCostName(const iCost : integer) : string;
     function ReturnFeatureName(const iFeature : integer) : string;
+    function MarxanResultsAvailable(const sDatabasePath, sOutputDirName, sOutputFileName : string): boolean;
     procedure UpdateSelectedPuLock(const iLockZone : integer;SelectedPus : Array_t);
     procedure SaveScenario(sScenario : string;fForceOverWrite : boolean);
     procedure Load_Scenario(sScenario : string);
@@ -134,11 +135,11 @@ function ReturnRecordCount(sDatFilename : string) : integer;
 var
    MarxanInterfaceForm: TMarxanInterfaceForm;
    sParameterLoaded, sRestoreParameter, sParameterFileLoaded, sCalibrationVariable : string;
-   SSOLN, PUIDSSOLN, BESTSOLN, PUIDBEST, SOLUTIONPUCOUNT, SOLUTIONS, PUIDSOLUTIONS : Array_t;
+   SSOLN, PUIDSSOLN, BESTSOLN, BESTHEUR, PUIDBEST, SOLUTIONPUCOUNT, SOLUTIONS, PUIDSOLUTIONS : Array_t;
    fUpdatedOnce, fUseDefaultMarxanResult, fCreatedSSOLN, fCreatedPUIDSSOLN, fCreatedBESTSOLN, fCreatedPUIDBEST,
-   fCreatedSOLUTIONPUCOUNT, fCreatedSOLUTIONS, fCreatedPUIDSOLUTIONS, fParameterChanged, fSettingParameter,
+   fCreatedSOLUTIONPUCOUNT, fCreatedSOLUTIONS, fCreatedPUIDSOLUTIONS, fCreatedBESTHEUR, fParameterChanged, fSettingParameter,
    fCalibrationRunning, fCalibrationCheckExponent, fActiveCalibrationRunning, fActiveCalibrationOpen : boolean;
-   iDDEMessageMode, iNumberOfZones, iNumberOfCosts, iNumberOfFeatures, iNumberOfPlanningUnits,
+   iDDEMessageMode, iNumberOfZones, iNumberOfCosts, iNumberOfFeatures, iNumberOfPlanningUnits, iNumberOfOrderedPlanningUnits,
    iCalibrationNumber, iCurrentCalibrationNumber, iCalibrationInput, iExportMapDPI : integer;
    iSolutionCount : integer; // number of Marxan solutions
    iNumberOfRuns : integer; // number of Marxan solutions, limited to a maximum of 100
@@ -608,6 +609,8 @@ begin
 
      ComboOutputToMap.Items.Clear;
      ComboOutputToMap.Items.Add('Best Solution');
+     ComboOutputToMap.Items.Add('Best Heuristic Ordering');
+
      (*
      if (iNumberOfZones < 2) then
      //   ComboOutputToMap.Items.Add('Zone');
@@ -645,6 +648,7 @@ begin
                *)
 
                AChild.ComboOutputToMap.Items.Add('Best Solution');
+               AChild.ComboOutputToMap.Items.Add('Best Heuristic Ordering');
 
                if (AChild.ComboOutputToMap.Items.IndexOf(sComboText) > -1) then
                   AChild.ComboOutputToMap.Text := sComboText
@@ -1365,10 +1369,22 @@ begin
      end;
 end;
 
+function  TMarxanInterfaceForm.MarxanResultsAvailable(const sDatabasePath, sOutputDirName, sOutputFileName : string): boolean;
+var
+  sInFIle: String;
+begin
+        MarxanResultsAvailable := False;
+        sInFile := ExtractFilePath(sDatabasePath) + sOutputDirName + '\' + sOutputFileName + '_ssoln.txt';
+        if not fileexists(sInFile) then
+           sInFile := ExtractFilePath(sDatabasePath) + sOutputDirName + '\' + sOutputFileName + '_ssoln.csv';
+        if fileexists(sInFile) then
+                MarxanResultsAvailable := True
+end;
+
 procedure ReadMarxanResult(const sDatabasePath, sOutputDirName, sOutputFileName : string;
                            var iSSOLNPUCount,iSSOLNZoneCount,iNumberOfSolutions : integer);
 var
-   iCount, iCount2, iValue, iSumCount : integer;
+   iCount, iCount2, iValue, iSumCount, iPUIndex : integer;
    Infile,Debugfile : TextFile;
    sLine, sInFile, sOutFile : string;
 begin
@@ -1454,12 +1470,19 @@ begin
              // create best arrays
              BESTSOLN := Array_t.Create;
              BESTSOLN.init(SizeOf(integer),iCount);
+             fCreatedBESTSOLN := True;
+
              PUIDBEST := Array_t.Create;
              PUIDBEST.init(SizeOf(integer),iCount);
-             fCreatedBESTSOLN := True;
              fCreatedPUIDBEST := True;
 
+             //Asssertion: BESTHEUR size == BESTSOLN size.
+             BESTHEUR := Array_t.Create;
+             BESTHEUR.init(SizeOf(integer),iCount);
+             fCreatedBESTHEUR := True;
+
              // traverse best solution file to populate arrays
+
              assignfile(InFile,sInFile);
              reset(InFile);
              readln(InFile,sLine);
@@ -1476,9 +1499,44 @@ begin
                       iValue := iValue + 1;
                    BESTSOLN.setValue(iCount,@iValue);
 
+                   iValue := 0;
+                   BESTHEUR.setValue(iCount,@iValue); // default to 0, fill in later.
+
              until Eof(InFile);
              closefile(InFile);
-        end
+        end;
+
+        sInFile := ExtractFilePath(sDatabasePath) + sOutputDirName + '\' + sOutputFileName + '_hobest.txt';
+        if not fileexists(sInFile) then
+           sInFile := ExtractFilePath(sDatabasePath) + sOutputDirName + '\' + sOutputFileName + '_hobest.csv';
+        if fileexists(sInFile) then
+        begin
+
+             // traverse best heuristic file record (not in pu order).
+
+             assignfile(InFile,sInFile);
+             reset(InFile);
+             readln(InFile,sLine);
+             iCount := 0;
+             repeat
+                readln(InFile,sLine);
+                Inc(iCount);
+
+                // Find matching PUIndex value for file entry.
+                iValue := StrToInt(GetDelimitedAsciiElement(sLine,',',1));
+
+                iPUIndex := BinaryLookup_Integer(PUIDBEST,iValue,1,PUIDBEST.lMaxSize);
+                if (iPUIndex <> -1) then
+                begin
+                   iValue := StrToInt(GetDelimitedAsciiElement(sLine,',',2));
+                   BESTHEUR.setValue(iPUIndex,@iValue) ;
+                end;
+
+             until Eof(InFile);
+             closefile(InFile);
+
+             iNumberOfOrderedPlanningUnits := iCount;
+        end // best heuristic ordering file found
         else
             fUseDefaultMarxanResult := True;
             //MessageDlg('ReadMarxanResult, file ' + sInFile + ' does not exist.',mtError,[mbOk],0);
@@ -1639,10 +1697,13 @@ begin
         iFieldsToAdd := 0;
         AddAField('SSOLN');
         AddAField('BESTSOLN');
+
         for iCount := 1 to iNumberOfZones do
             AddAField('SSOLN' + IntToStr(iCount));
         for iCount := 1 to iNumberOfRuns do
             AddAField('SOLN' + IntToStr(iCount));
+
+        AddAField('BESTHEUR');
 
         ThemeTable.Close;
 
@@ -1711,6 +1772,8 @@ begin
             AddAField('SSOLN' + IntToStr(i));
         for i := 1 to 100 do
             AddAField('SOLN' + IntToStr(i));
+
+        AddAField('BESTHEUR');
 
         ThemeTable.Close;
 
@@ -1819,6 +1882,8 @@ begin
              ThemeTable.Edit;
              ThemeTable.FieldByName('SSOLN').AsInteger := 0;
              ThemeTable.FieldByName('BESTSOLN').AsInteger := 0;
+             ThemeTable.FieldByName('BESTHEUR').AsInteger := 0;
+
              for iCount3 := 1 to iNumberOfSolutions do
                  ThemeTable.FieldByName('SOLN' + IntToStr(iCount3)).AsInteger := 0;
              if (iSSOLNZoneCount < 2) then
@@ -1874,6 +1939,8 @@ begin
              ThemeTable.Edit;
              ThemeTable.FieldByName('SSOLN').AsInteger := 0;
              ThemeTable.FieldByName('BESTSOLN').AsInteger := 0;
+             ThemeTable.FieldByName('BESTHEUR').AsInteger := 0;
+
              for iCount3 := 1 to iNumberOfSolutions do
                  ThemeTable.FieldByName('SOLN' + IntToStr(iCount3)).AsInteger := 0;
 
@@ -1917,6 +1984,14 @@ begin
                   end;
              end;
 
+             // find this puid in BESTHEUR
+             iPUIndex := BinaryLookup_Integer(PUIDBEST,iPUID,1,PUIDBEST.lMaxSize);
+             if (iPUIndex <> -1) then
+             begin
+                  BESTHEUR.rtnValue(iPUIndex,@iValue);
+                  ThemeTable.FieldByName('BESTHEUR').AsInteger := iValue;
+             end;
+
              for iCount3 := 1 to iNumberOfSolutions do
              begin
                   // find this puid in PUIDSOLUTIONS
@@ -1955,11 +2030,12 @@ var
    sFieldToMap : string;
    iZoneToMap, iMinValue, iMaxValue, iGISChildIndex : integer;
    GISChild : TGIS_Child;
-   fSummedSolution, fEditConfigurationsFormHasFocus : boolean;
+   fSummedSolution, fOrderedSolution, fEditConfigurationsFormHasFocus : boolean;
 begin
      try
         ButtonUpdate.Enabled := True;
         fSummedSolution := True;
+        fOrderedSolution := False;
 
         if (Pos('Zone',ComboOutputToMap.Text)>0) then
         begin
@@ -1976,14 +2052,30 @@ begin
         else
         begin
              if (ComboOutputToMap.Text = 'Best Solution') then
-                sFieldToMap := 'BESTSOLN'
+             begin
+                sFieldToMap := 'BESTSOLN';
+                iMinValue := 0;
+                iMaxValue := iNumberOfZones-1;
+                fSummedSolution := False;
+                fOrderedSolution := False;
+             end
              else
-                 sFieldToMap := 'SOLN' + Copy(ComboOutputToMap.Text,10,Length(ComboOutputToMap.Text)-9);
-
-             iMinValue := 0;
-             iMaxValue := iNumberOfZones-1;
-
-             fSummedSolution :=  False;
+             if (ComboOutputToMap.Text = 'Best Heuristic Ordering') then
+             begin
+                sFieldToMap := 'BESTHEUR';
+                iMinValue := 1;
+                iMaxValue := iNumberOfOrderedPlanningUnits;
+                fSummedSolution := False;
+                fOrderedSolution := True;
+             end
+             else
+             begin
+                sFieldToMap := 'SOLN' + Copy(ComboOutputToMap.Text,10,Length(ComboOutputToMap.Text)-9);
+                iMinValue := 0;
+                iMaxValue := iNumberOfZones-1;
+                fSummedSolution := False;
+                fOrderedSolution := False;
+             end;
         end;
 
         iGISChildIndex := SCPForm.ReturnGISChildIndex;
@@ -1997,9 +2089,9 @@ begin
                    fEditConfigurationsFormHasFocus := True;
 
              if fEditConfigurationsFormHasFocus then
-                GIS_Child.UpdateMap(0, iNumberOfZones-1, EditConfigurationsForm.sConfigField, False, True, Self)
+                GIS_Child.UpdateMap(0, iNumberOfZones-1, EditConfigurationsForm.sConfigField, False, False, True, Self)
              else
-                 GISChild.UpdateMap(iMinValue, iMaxValue, sFieldToMap, fSummedSolution, False, Self);
+                 GISChild.UpdateMap(iMinValue, iMaxValue, sFieldToMap, fSummedSolution, fOrderedSolution, False, Self);
         end;
 
      except
@@ -2019,6 +2111,7 @@ begin
         fCreatedSSOLN := False;
         fCreatedPUIDSSOLN := False;
         fCreatedBESTSOLN := False;
+        fCreatedBESTHEUR := False;
         fCreatedPUIDBEST := False;
         fCreatedSOLUTIONPUCOUNT := False;
         fCreatedSOLUTIONS := False;
@@ -2045,6 +2138,9 @@ begin
 
         if fCreatedBESTSOLN then
            BESTSOLN.Destroy;
+
+        if fCreatedBESTHEUR then
+           BESTHEUR.Destroy;
 
         if fCreatedPUIDBEST then
            PUIDBEST.Destroy;
@@ -2827,7 +2923,7 @@ begin
           iNumberOfZones := ReturnRecordCount(ExtractFilePath(EditMarxanDatabasePath.Text) + 'input\zones.dat');
           iNumberOfCosts := ReturnRecordCount(ExtractFilePath(EditMarxanDatabasePath.Text) + 'input\costs.dat');
           iNumberOfFeatures := ReturnRecordCount(ExtractFilePath(EditMarxanDatabasePath.Text) + 'input\spec.dat');
-          //iNumberOfPlanningUnits := ReturnRecordCount(ExtractFilePath(EditMarxanDatabasePath.Text) + 'input\spec.dat');
+          iNumberOfPlanningUnits := ReturnRecordCount(ExtractFilePath(EditMarxanDatabasePath.Text) + 'input\pu.dat');
           RefreshRunNumber;
 
           // refresh GIS results

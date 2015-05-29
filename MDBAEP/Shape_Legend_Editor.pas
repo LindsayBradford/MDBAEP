@@ -34,7 +34,7 @@ type
     GChild : TGIS_Child;
     MChild : TMarxanInterfaceForm;
     LocalSingleSolutionColours : Array_t;
-    LocalSelectionColour, LocalSummedSolutionColour : TColor;
+    LocalSelectionColour, LocalSummedSolutionColour, LocalOrderedSolutionColour : TColor;
   end;
 
 var
@@ -70,6 +70,15 @@ begin
                    //ColorGrid1.ForegroundIndex := ColourToIndex(LocalSummedSolutionColour);
               end;
           2 : begin
+                   LabelToEdit.Caption := 'Ordered Selection Colour';
+                   MemoColour.Visible := True;
+                   MemoColour.Lines.Clear;
+                   MemoColour.Lines.Add('Colours will be ramped from white (Selection Frequency = 0) to colour specified (Selection Frequency = number of runs).');
+                   Shape1.Brush.Color := LocalOrderedSolutionColour;
+                   DrawGrid1.Visible := False;
+                   //ColorGrid1.ForegroundIndex := ColourToIndex(LocalSummedSolutionColour);
+              end;
+          3 : begin
                    LabelToEdit.Caption := 'Single Solution Colour';
                    MemoColour.Visible := True;
                    MemoColour.Lines.Clear;
@@ -119,6 +128,10 @@ begin
                    LocalSummedSolutionColour := Shape1.Brush.Color;
               end;
           2 : begin
+                   Shape1.Brush.Color := ColorGrid1.ForegroundColor;
+                   LocalOrderedSolutionColour := Shape1.Brush.Color;
+              end;
+          3 : begin
                    TempColour := ColorGrid1.ForegroundColor;
                    LocalSingleSolutionColours.setValue(DrawGrid1.Selection.Top+1,@TempColour);
                    DrawGrid1.Invalidate;
@@ -145,6 +158,7 @@ begin
 
      LocalSelectionColour := GChild.SelectionColour;
      LocalSummedSolutionColour := GChild.SummedSolutionColour;
+     LocalOrderedSolutionColour := GChild.OrderedSolutionColour;
 
      LabelToEdit.Caption := 'Selection Colour';
      MemoColour.Visible := False;
@@ -166,6 +180,7 @@ begin
 
      GChild.SelectionColour := LocalSelectionColour;
      GChild.SummedSolutionColour := LocalSummedSolutionColour;
+     GChild.OrderedSolutionColour := LocalOrderedSolutionColour;
 
      // update map
      MChild.RefreshGISDisplay;

@@ -336,7 +336,7 @@ begin
           ListBoxPUConfiguration.ItemIndex := ListBoxConfigFieldNames.Items.IndexOf(sConfigField);
 
           // load configuration into GIS display
-          GIS_Child.UpdateMap(0, iNumberOfZones-1, sConfigField, False, True, MarxanInterfaceForm);
+          GIS_Child.UpdateMap(0, iNumberOfZones-1, sConfigField, False, False, True, MarxanInterfaceForm);
           GIS_Child.RedrawSelection;
           RedrawConfigMapLegend;
      end;
@@ -443,7 +443,7 @@ begin
           sConfigField := ListBoxConfigFieldNames.Items.Strings[0];
           sConfigName := ListBoxPUConfiguration.Items.Strings[0];
 
-          GIS_Child.UpdateMap(0, iNumberOfZones-1, ListBoxConfigFieldNames.Items.Strings[0], False, True, MarxanInterfaceForm);
+          GIS_Child.UpdateMap(0, iNumberOfZones-1, ListBoxConfigFieldNames.Items.Strings[0], False, False, True, MarxanInterfaceForm);
           GIS_Child.RedrawSelection;
           RedrawConfigMapLegend;
      end;
@@ -484,7 +484,7 @@ begin
      begin
           PUConfiguration.Text := ListBoxPUConfiguration.Items.Strings[ListBoxPUConfiguration.ItemIndex];
           sConfigField := ListBoxConfigFieldNames.Items.Strings[ListBoxPUConfiguration.ItemIndex];
-          GIS_Child.UpdateMap(0, iNumberOfZones-1, sConfigField, False, True, MarxanInterfaceForm);
+          GIS_Child.UpdateMap(0, iNumberOfZones-1, sConfigField, False, False, True, MarxanInterfaceForm);
           GIS_Child.RedrawSelection;
           RedrawConfigMapLegend;
      end;
@@ -599,7 +599,7 @@ begin
      begin
           PUConfiguration.Text := ListBoxPUConfiguration.Items.Strings[ListBoxPUConfiguration.ItemIndex];
           sConfigField := ListBoxConfigFieldNames.Items.Strings[ListBoxPUConfiguration.ItemIndex];
-          GIS_Child.UpdateMap(0, iNumberOfZones-1, sConfigField, False, True, MarxanInterfaceForm);
+          GIS_Child.UpdateMap(0, iNumberOfZones-1, sConfigField, False, False, True, MarxanInterfaceForm);
           GIS_Child.RedrawSelection;
           RedrawConfigMapLegend;
      end;
@@ -703,7 +703,7 @@ procedure TEditConfigurationsForm.PanelSaveClick(Sender: TObject);
 begin
      // update the value of the selected planning units in the selected configuration
      SaveToScenario;
-     GIS_Child.UpdateMap(0, iNumberOfZones-1, sConfigField, False, True, MarxanInterfaceForm);
+     GIS_Child.UpdateMap(0, iNumberOfZones-1, sConfigField, False, False, True, MarxanInterfaceForm);
      // init selection
      GIS_Child.InitShapeSelection;
      RedrawConfigMapLegend;
@@ -719,7 +719,7 @@ end;
 procedure TEditConfigurationsForm.PanelUndoClick(Sender: TObject);
 begin
      RestoreUndo;
-     GIS_Child.UpdateMap(0, iNumberOfZones-1, sConfigField, False, True, MarxanInterfaceForm);
+     GIS_Child.UpdateMap(0, iNumberOfZones-1, sConfigField, False, False, True, MarxanInterfaceForm);
      // init selection
      GIS_Child.InitShapeSelection;
      RedrawConfigMapLegend;

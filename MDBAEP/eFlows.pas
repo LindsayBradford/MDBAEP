@@ -1579,7 +1579,7 @@ begin
 
         sFieldToMap := 'R' + IntToStr(iRun) + 'S' + IntToStr(iSeason);
 
-        GIS_Child.UpdateMap(0, 1, sFieldToMap, False, False, nil);
+        GIS_Child.UpdateMap(0, 1, sFieldToMap, False, False, False, nil);
         // redisplay labels
         GIS_Child.RestoreLabels;
 

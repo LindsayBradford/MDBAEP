@@ -943,7 +943,8 @@ var
    iTop, iLeft, iHeight, iWidth, iLayerHandle, iFontSize : integer;
    AIni : TIniFile;
    sLayerColour, sLayerName, sTemporaryFilePath, sTemp, sWindowState : string;
-   fLayerVisible, fStop, fAdaptivePathTriggered, fLoadingMarxan, fLoadingeFlows, feFlowsPuLayer : boolean;
+   fLayerVisible, fStop, fAdaptivePathTriggered, fLoadingMarxan, fLoadingeFlows,
+   feFlowsPuLayer, fMarxanResultsAvailable : boolean;
    TempColour : TColor;
    myExtents: MapWinGIS_TLB.Extents;
    xMin, yMin, zMin, xMax, yMax, zMax : Double;
@@ -1131,12 +1132,24 @@ begin
                                     GIS_Child.SelectionColour := SmartOpenColour(sLayerColour);
                                     sLayerColour := AIni.ReadString('GIS','SummedSolutionColour',TColourToHex(GIS_Child.SummedSolutionColour));
                                     GIS_Child.SummedSolutionColour := SmartOpenColour(sLayerColour);
+                                    sLayerColour := AIni.ReadString('GIS','OrderedSolutionColour',TColourToHex(GIS_Child.OrderedSolutionColour));
+                                    GIS_Child.OrderedSolutionColour := SmartOpenColour(sLayerColour);
                                     ShapeOutlines1.Checked := AIni.ReadBool('GIS','ShapeOutlines',False);
 
                                     GIS_Child.Map1.ShapeLayerFillTransparency[iLayerHandle] := 1;
 
                                     GIS_Child.Show;
-                                    RefreshGISDisplay;
+
+                                    fMarxanResultsAvailable := MarxanResultsAvailable(
+                                        EditMarxanDatabasePath.Text,
+                                        ReturnMarxanParameter('OUTPUTDIR'),
+                                        ReturnMarxanParameter('SCENNAME')
+                                    );
+
+                                    if fMarxanResultsAvailable then
+                                        SendResultsToGIS
+                                    else
+                                        RefreshGISDisplay
                                end;
                           end;
                        except

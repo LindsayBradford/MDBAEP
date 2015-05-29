@@ -45,6 +45,7 @@ type
                               iUpdateLayer, iField : integer);
     procedure UpdateMap(iMinValue, iMaxValue : integer; sField : string;
                         const fSummedSolution : boolean;
+                        const fOrderedSolution : boolean;
                         const fEditConfig : boolean;
                         MChild : TMarxanInterfaceForm);
     function AddShape(sShapefile : string) : integer;
@@ -158,7 +159,7 @@ type
     fShapeSelection, fDDEMapCategories : boolean;
     ShapeSelection, DDEMapCategories : Array_t;
     sPuFileName : string;
-    SelectionColour, SummedSolutionColour : TColor;
+    SelectionColour, SummedSolutionColour, OrderedSolutionColour : TColor;
   end;
 
 procedure Polygon2Image(const sInputPolygonfile,sFieldToUse,sOutputGridfile,sOutputImagefile : string;
@@ -2618,6 +2619,7 @@ end;
 
 procedure TGIS_Child.UpdateMap(iMinValue, iMaxValue : integer; sField : string;
                                const fSummedSolution : boolean;
+                               const fOrderedSolution : boolean;
                                const fEditConfig : boolean;
                                MChild : TMarxanInterfaceForm);
 var
@@ -2729,6 +2731,23 @@ begin
                          bk.Caption := 'Marxan';
                          bk.StartColor := clWhite;
                          bk.EndColor := SummedSolutionColour;
+                         bk.StartValue := iMinValue;
+                         bk.EndValue := iMaxValue;
+
+                         // init colour scheme object
+                         cs := CoShapefileColorScheme.Create();
+                         cs.LayerHandle := iUpdateLayer;
+                         cs.FieldIndex := iField;
+                         cs.Add(bk);
+                    end
+                    else
+                    if fOrderedSolution then
+                    begin
+                         // init break object for colour scheme
+                         bk := CoShapefileColorBreak.Create();
+                         bk.Caption := 'Marxan';
+                         bk.StartColor := OrderedSolutionColour;
+                         bk.EndColor := clWhite;
                          bk.StartValue := iMinValue;
                          bk.EndValue := iMaxValue;
 
