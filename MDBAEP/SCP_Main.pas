@@ -240,6 +240,8 @@ type
     Maximise1: TMenuItem;
     Restore1: TMenuItem;
     ClearRecentFiles1: TMenuItem;
+    BestHeuristicOrdering: TMenuItem;
+    BestHeuristicOrderingReport: TMenuItem;
     procedure About1Click(Sender: TObject);
     procedure Arrange1Click(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
@@ -299,6 +301,7 @@ type
     procedure DisplayMarxanCalibrationReport;
     procedure DisplayMarxanSummaryReport;
     procedure DisplayBestSolutionFeaturesReport;
+    procedure DisplayBestHeuristicOrderingReport;
     procedure SummaryReport1Click(Sender: TObject);
     procedure AutoFitCSVChild(const fFitEntireGrid : boolean);
     procedure EntireTable1Click(Sender: TObject);
@@ -405,6 +408,7 @@ type
     procedure AllShapes1Click(Sender: TObject);
     procedure SelectedShapes1Click(Sender: TObject);
     procedure BestSolution1Click(Sender: TObject);
+    procedure BestHeuristicOrderingReportClick(Sender: TObject);
     procedure SummedSolution1Click(Sender: TObject);
     procedure Transparency1Click(Sender: TObject);
     procedure BuildCPlanDataset1Click(Sender: TObject);
@@ -2725,6 +2729,37 @@ begin
      end;
 end;
 
+procedure TSCPForm.DisplayBestHeuristicOrderingReport;
+var
+   iMarxanChildIndex : integer;
+   sFilename : string;
+   A_CSVChild : TCSVChild;
+begin
+     iMarxanChildIndex := ReturnMarxanChildIndex;
+     if (iMarxanChildIndex > -1) then
+     begin
+          sFilename := ExtractFilePath(TMarxanInterfaceForm(SCPForm.MDIChildren[iMarxanChildIndex]).EditMarxanDatabasePath.Text) +
+                       TMarxanInterfaceForm(SCPForm.MDIChildren[iMarxanChildIndex]).ReturnMarxanParameter('OUTPUTDIR') +
+                       '\' +
+                       TMarxanInterfaceForm(SCPForm.MDIChildren[iMarxanChildIndex]).ReturnMarxanParameter('SCENNAME') +
+                       '_hobest.txt';
+
+          if not fileexists(sFilename) then
+             sFilename := ExtractFilePath(TMarxanInterfaceForm(SCPForm.MDIChildren[iMarxanChildIndex]).EditMarxanDatabasePath.Text) +
+                          TMarxanInterfaceForm(SCPForm.MDIChildren[iMarxanChildIndex]).ReturnMarxanParameter('OUTPUTDIR') +
+                          '\' +
+                          TMarxanInterfaceForm(SCPForm.MDIChildren[iMarxanChildIndex]).ReturnMarxanParameter('SCENNAME') +
+                          '_hobest.csv';
+
+          if fileexists(sFilename) then
+          begin
+               A_CSVChild := CreateCSVChild(sFilename,2);
+
+               AutoFitCSVChild(True);
+          end;
+     end;
+end;
+
 procedure TSCPForm.SummaryReport1Click(Sender: TObject);
 begin
      DisplayMarxanSummaryReport;
@@ -2919,6 +2954,11 @@ end;
 procedure TSCPForm.BestSolutionFeatures1Click(Sender: TObject);
 begin
      DisplayBestSolutionFeaturesReport;
+end;
+
+procedure TSCPForm.BestHeuristicOrderingReportClick(Sender: TObject);
+begin
+     DisplayBestHeuristicOrderingReport;
 end;
 
 procedure TSCPForm.ZoomtoExtentonResize1Click(Sender: TObject);
