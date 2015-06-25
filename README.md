@@ -1,7 +1,7 @@
 # MDBAEP
 Murray Darling Basin Authority Environmental Prioritisation Tool
 
-![A recent image](https://goo.gl/EoY7T1) 
+![A recent image](https://goo.gl/QR23IY) 
 
 ## Relationship to Zonae Cogito
 
