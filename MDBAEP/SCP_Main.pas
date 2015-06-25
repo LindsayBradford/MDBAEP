@@ -1138,6 +1138,8 @@ begin
                                     GIS_Child.SummedSolutionColour := SmartOpenColour(sLayerColour);
                                     sLayerColour := AIni.ReadString('GIS','OrderedSolutionColour',TColourToHex(GIS_Child.OrderedSolutionColour));
                                     GIS_Child.OrderedSolutionColour := SmartOpenColour(sLayerColour);
+                                    GIS_Child.OrderedSolutionPercent := AIni.ReadInteger('GIS','OrderedSolutionPercent',HEURISTIC_DISPLAY_PERCENT);
+
                                     ShapeOutlines1.Checked := AIni.ReadBool('GIS','ShapeOutlines',False);
 
                                     GIS_Child.Map1.ShapeLayerFillTransparency[iLayerHandle] := 1;

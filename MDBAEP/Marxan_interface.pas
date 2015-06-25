@@ -2064,7 +2064,7 @@ begin
              begin
                 sFieldToMap := 'BESTHEUR';
                 iMinValue := 1;
-                iMaxValue := Round(iNumberOfOrderedPlanningUnits * HEURISTIC_DISPLAY_FRACTION);
+                iMaxValue := iNumberOfOrderedPlanningUnits;
                 fSummedSolution := False;
                 fOrderedSolution := True;
              end

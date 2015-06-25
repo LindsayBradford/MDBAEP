@@ -160,6 +160,7 @@ type
     ShapeSelection, DDEMapCategories : Array_t;
     sPuFileName : string;
     SelectionColour, SummedSolutionColour, OrderedSolutionColour : TColor;
+    OrderedSolutionPercent : integer;
   end;
 
 procedure Polygon2Image(const sInputPolygonfile,sFieldToUse,sOutputGridfile,sOutputImagefile : string;
@@ -2749,7 +2750,7 @@ begin
                          bk.StartColor := OrderedSolutionColour;
                          bk.EndColor := clWhite;
                          bk.StartValue := iMinValue;
-                         bk.EndValue := iMaxValue;
+                         bk.EndValue := iMaxValue * (OrderedSolutionPercent/100);
 
                          // init colour scheme object
                          cs := CoShapefileColorScheme.Create();

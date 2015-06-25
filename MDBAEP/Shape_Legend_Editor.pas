@@ -5,7 +5,7 @@ interface
 uses
   ds, GIS, Marxan_interface,
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ColorGrd, Grids, StdCtrls, ExtCtrls, Buttons;
+  ColorGrd, Grids, StdCtrls, ExtCtrls, Buttons, ComCtrls;
 
 type
   TMarxanLegendEditorForm = class(TForm)
@@ -17,6 +17,8 @@ type
     DrawGrid1: TDrawGrid;
     BitBtnAcceptChanges: TBitBtn;
     BitBtn2: TBitBtn;
+    PUVisibleTrackBar: TTrackBar;
+    HeuristicPercentLabel: TLabel;
     procedure RadioTypeClick(Sender: TObject);
     procedure DrawGrid1DrawCell(Sender: TObject; ACol, ARow: Integer;
       Rect: TRect; State: TGridDrawState);
@@ -27,6 +29,8 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure DrawGrid1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure PUVisibleTrackBarChange(Sender: TObject);
+    procedure AlignHeuristicLabelAndTaskBar();
   private
     { Private declarations }
   public
@@ -35,6 +39,7 @@ type
     MChild : TMarxanInterfaceForm;
     LocalSingleSolutionColours : Array_t;
     LocalSelectionColour, LocalSummedSolutionColour, LocalOrderedSolutionColour : TColor;
+    LocalOrderedSolutionPercent: integer;
   end;
 
 var
@@ -58,6 +63,8 @@ begin
                    MemoColour.Visible := False;
                    Shape1.Brush.Color := LocalSelectionColour;
                    DrawGrid1.Visible := False;
+                   PUVisibleTrackBar.Visible := False;
+                   HeuristicPercentLabel.Visible := False;
                    //ColorGrid1.ForegroundIndex := ColourToIndex(LocalSelectionColour);
               end;
           1 : begin
@@ -67,6 +74,8 @@ begin
                    MemoColour.Lines.Add('Colours will be ramped from white (Selection Frequency = 0) to colour specified (Selection Frequency = number of runs).');
                    Shape1.Brush.Color := LocalSummedSolutionColour;
                    DrawGrid1.Visible := False;
+                   PUVisibleTrackBar.Visible := False;
+                   HeuristicPercentLabel.Visible := False;
                    //ColorGrid1.ForegroundIndex := ColourToIndex(LocalSummedSolutionColour);
               end;
           2 : begin
@@ -75,11 +84,12 @@ begin
                    MemoColour.Lines.Clear;
                    MemoColour.Lines.Add(
                      'Colours will be ramped from colour specified (Heuristic Order = 1) to white (Heuristic Order = '
-                     + FormatFloat('0.00',HEURISTIC_DISPLAY_FRACTION) +
-                     ' * number of planning units reserverd).'
+                     + 'specified % of planning units reserverd).'
                    );
                    Shape1.Brush.Color := LocalOrderedSolutionColour;
                    DrawGrid1.Visible := False;
+                   PUVisibleTrackBar.Visible := True;
+                   HeuristicPercentLabel.Visible := True;
                    //ColorGrid1.ForegroundIndex := ColourToIndex(LocalSummedSolutionColour);
               end;
           3 : begin
@@ -89,6 +99,9 @@ begin
                    MemoColour.Lines.Add('Specify a colour for each zone.');
                    DrawGrid1.Visible := True;
                    LocalSingleSolutionColours.rtnValue(1,@TempColour);
+                   PUVisibleTrackBar.Visible := False;
+                   HeuristicPercentLabel.Visible := False;
+
                    //ColorGrid1.ForegroundIndex := ColourToIndex(TempColour);
 
                    //for iCount := 1 to LocalSingleSolutionColours.lMaxSize do
@@ -163,12 +176,18 @@ begin
      LocalSelectionColour := GChild.SelectionColour;
      LocalSummedSolutionColour := GChild.SummedSolutionColour;
      LocalOrderedSolutionColour := GChild.OrderedSolutionColour;
+     LocalOrderedSolutionPercent := GChild.OrderedSolutionPercent;
 
      LabelToEdit.Caption := 'Selection Colour';
      MemoColour.Visible := False;
      Shape1.Brush.Color := LocalSelectionColour;
      DrawGrid1.Visible := False;
      //ColorGrid1.ForegroundIndex := ColourToIndex(LocalSelectionColour);
+     PUVisibleTrackBar.Position := LocalOrderedSolutionPercent;
+     AlignHeuristicLabelAndTaskBar();
+     PUVisibleTrackBar.Visible := False;
+     HeuristicPercentLabel.Visible := False;
+
 end;
 
 procedure TMarxanLegendEditorForm.BitBtnAcceptChangesClick(Sender: TObject);
@@ -185,7 +204,7 @@ begin
      GChild.SelectionColour := LocalSelectionColour;
      GChild.SummedSolutionColour := LocalSummedSolutionColour;
      GChild.OrderedSolutionColour := LocalOrderedSolutionColour;
-
+     GChild.OrderedSolutionPercent := LocalOrderedSolutionPercent;
      // update map
      MChild.RefreshGISDisplay;
 end;
@@ -206,6 +225,25 @@ var
 begin
      LocalSingleSolutionColours.rtnValue(DrawGrid1.Selection.Top+1,@TempColour);
      //ColorGrid1.ForegroundIndex := ColourToIndex(TempColour);
+end;
+
+procedure TMarxanLegendEditorForm.PUVisibleTrackBarChange(Sender: TObject);
+begin
+    AlignHeuristicLabelAndTaskBar();
+end;
+
+procedure TMarxanLegendEditorForm.AlignHeuristicLabelAndTaskBar();
+  var newLabelText, positionAsText: String;
+begin
+  newLabelText := HeuristicPercentLabel.Caption;
+  positionAsText := Format('%3d',[PUVisibleTrackBar.Position]);
+
+  Delete(newLabelText,1,3);
+  Insert(positionAsText,newLabelText,0);
+
+  HeuristicPercentLabel.Caption := newLabelText;
+
+  LocalOrderedSolutionPercent := PUVisibleTrackBar.Position;
 end;
 
 end.
