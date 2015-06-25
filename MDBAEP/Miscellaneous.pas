@@ -85,6 +85,8 @@ const
      SORT_TYPE_STRING = 0;
      SORT_TYPE_REAL = 1;
 
+     HEURISTIC_DISPLAY_FRACTION = 0.2;
+
      fDisplayeFlowsGUI_Default = False;
 
      sEE1 = 'latemhtaedfosdrol';
