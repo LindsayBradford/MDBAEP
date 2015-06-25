@@ -2627,7 +2627,7 @@ var
    iCount, iField, iUpdateLayer, iDisplayValue, iNullDisplayValue : integer;
    sf: MapWinGIS_TLB.Shapefile;
    cs : MapWinGIS_TLB.ShapefileColorScheme;
-   bk : MapWinGIS_TLB.ShapefileColorBreak;
+   bk,bk2 : MapWinGIS_TLB.ShapefileColorBreak;
    AColour : TColor;
    fFieldNameContainsSSOLN, fDisplayNull : boolean;
    vDisplayValue : variant;
@@ -2752,11 +2752,18 @@ begin
                          bk.StartValue := iMinValue;
                          bk.EndValue := iMaxValue * (OrderedSolutionPercent/100);
 
+                         bk2 := CoShapefileColorBreak.Create();
+                         bk2.Caption := 'Marxan';
+                         bk2.StartColor := clWhite;
+                         bk2.EndColor := clWhite;
+                         bk2.StartValue := 1 + iMaxValue * (OrderedSolutionPercent/100);
+                         bk2.EndValue := iMaxValue;
+
                          // init colour scheme object
                          cs := CoShapefileColorScheme.Create();
                          cs.LayerHandle := iUpdateLayer;
                          cs.FieldIndex := iField;
-                         cs.Add(bk);
+                         cs.Add(bk); cs.Add(bk2);
                     end
                     else
                     begin
