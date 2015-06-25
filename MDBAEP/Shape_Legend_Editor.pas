@@ -73,7 +73,11 @@ begin
                    LabelToEdit.Caption := 'Ordered Selection Colour';
                    MemoColour.Visible := True;
                    MemoColour.Lines.Clear;
-                   MemoColour.Lines.Add('Colours will be ramped from white (Selection Frequency = 0) to colour specified (Selection Frequency = number of runs).');
+                   MemoColour.Lines.Add(
+                     'Colours will be ramped from colour specified (Heuristic Order = 1) to white (Heuristic Order = '
+                     + FormatFloat('0.00',HEURISTIC_DISPLAY_FRACTION) +
+                     ' * number of planning units reserverd).'
+                   );
                    Shape1.Brush.Color := LocalOrderedSolutionColour;
                    DrawGrid1.Visible := False;
                    //ColorGrid1.ForegroundIndex := ColourToIndex(LocalSummedSolutionColour);
